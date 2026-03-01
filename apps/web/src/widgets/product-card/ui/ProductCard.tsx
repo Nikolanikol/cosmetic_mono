@@ -7,7 +7,6 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { Heart } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
 import { PriceDisplay } from '@/entities/product/ui/PriceDisplay';
 import { ProductBadges } from '@/entities/product/ui/ProductBadge';
@@ -15,6 +14,8 @@ import { Rating } from '@/shared/ui/Rating';
 import { ROUTES } from '@/shared/config/routes';
 import { COUNTRY_FLAGS } from '@packages/types';
 import type { ProductWithDefaultVariant } from '@packages/types';
+import { WishlistButton } from '@/features/wishlist';
+import { useCartStore } from '@/features/cart/model/useCartStore';
 
 interface ProductCardProps {
   product: ProductWithDefaultVariant;
@@ -34,6 +35,25 @@ export function ProductCard({
   variant = 'default',
 }: ProductCardProps) {
   const { brand, default_variant, primary_image } = product;
+  const addItem = useCartStore((s) => s.addItem);
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!default_variant) return;
+    addItem({
+      id:        default_variant.id,
+      productId: product.id,
+      variantId: default_variant.id,
+      name:      product.name_ru,
+      price:     default_variant.price_rub,
+      salePrice: default_variant.sale_price_rub ?? null,
+      quantity:  1,
+      imageUrl:  primary_image?.url,
+      slug:      product.slug,
+    });
+  };
+
   const hasDiscount =
     default_variant?.sale_price_rub !== null &&
     default_variant?.sale_price_rub !== undefined &&
@@ -111,11 +131,19 @@ export function ProductCard({
           </div>
         )}
 
-        {/* Wishlist Button */}
-        <WishlistButton productId={product.id} />
+        {/* Wishlist Button — top-right corner */}
+        <WishlistButton
+          productId={product.id}
+          className={cn(
+            'absolute top-2 right-2',
+            'w-8 h-8 flex items-center justify-center',
+            'bg-brand-black-900/80 backdrop-blur-sm rounded-full',
+            'hover:bg-brand-pink-500 hover:scale-110 hover:text-white'
+          )}
+        />
 
         {/* Quick Add Button (shown on hover) */}
-        {!isCompact && (
+        {!isCompact && default_variant && (
           <div className="absolute bottom-0 left-0 right-0 p-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
             <button
               className={cn(
@@ -124,11 +152,7 @@ export function ProductCard({
                 'hover:bg-brand-pink-400',
                 'focus:outline-none focus:ring-2 focus:ring-brand-pink-500 focus:ring-offset-2 focus:ring-offset-brand-black-700'
               )}
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                // Quick add to cart - will be handled by parent
-              }}
+              onClick={handleAddToCart}
             >
               В корзину
             </button>
@@ -188,48 +212,6 @@ export function ProductCard({
         />
       </div>
     </article>
-  );
-}
-
-/**
- * Wishlist Button Component
- */
-interface WishlistButtonProps {
-  productId: string;
-  className?: string;
-}
-
-function WishlistButton({ productId, className }: WishlistButtonProps) {
-  // TODO: Connect to wishlist store
-  const isInWishlist = false;
-
-  return (
-    <button
-      className={cn(
-        'absolute top-2 right-2',
-        'w-8 h-8 flex items-center justify-center',
-        'bg-brand-black-900/80 backdrop-blur-sm rounded-full',
-        'transition-all duration-200',
-        'hover:bg-brand-pink-500 hover:scale-110',
-        'focus:outline-none focus:ring-2 focus:ring-brand-pink-500',
-        className
-      )}
-      onClick={(e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        // Toggle wishlist - will be handled by wishlist store
-      }}
-      aria-label={isInWishlist ? 'Удалить из избранного' : 'Добавить в избранное'}
-    >
-      <Heart
-        className={cn(
-          'w-4 h-4 transition-colors',
-          isInWishlist
-            ? 'fill-brand-pink-500 text-brand-pink-500'
-            : 'text-white'
-        )}
-      />
-    </button>
   );
 }
 

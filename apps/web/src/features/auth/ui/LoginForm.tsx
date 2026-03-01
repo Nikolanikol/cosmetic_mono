@@ -1,52 +1,23 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { Mail, Lock } from 'lucide-react';
-import { Button } from '@/shared/ui/Button';
-import { Input } from '@/shared/ui/Input';
-import { signInWithEmail, signInWithGoogle } from '../api/authApi';
+import { useSearchParams } from 'next/navigation';
+import { signInWithGoogle } from '../api/authApi';
 
 export function LoginForm() {
-  const router = useRouter();
   const searchParams = useSearchParams();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(
-    // Show error if redirected from callback with ?error=auth_failed
     searchParams?.get('error') === 'auth_failed'
       ? 'Не удалось войти через Google. Попробуйте ещё раз.'
       : null
   );
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      await signInWithEmail(email, password);
-      router.push('/');
-      router.refresh();
-    } catch (err) {
-      setError(
-        err instanceof Error
-          ? translateAuthError(err.message)
-          : 'Ошибка входа'
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
     setError(null);
     try {
       await signInWithGoogle();
-      // Browser redirects to Google — no code after this point
     } catch (err) {
       setError(
         err instanceof Error ? err.message : 'Ошибка входа через Google'
@@ -56,94 +27,38 @@ export function LoginForm() {
   };
 
   return (
-    <div className="w-full max-w-md mx-auto">
+    <div className="w-full max-w-sm mx-auto">
       <div className="text-center mb-8">
         <h1 className="text-2xl font-bold text-white mb-2">Вход</h1>
         <p className="text-brand-charcoal-300">Войдите в свой аккаунт</p>
       </div>
 
-      {/* Error message */}
       {error && (
         <div className="mb-5 p-3 bg-red-500/10 border border-red-500/30 rounded-[2px] text-red-400 text-sm">
           {error}
         </div>
       )}
 
-      {/* Google OAuth button */}
       <button
         type="button"
         onClick={handleGoogleSignIn}
         disabled={isLoading}
-        className="w-full flex items-center justify-center gap-3 px-4 py-2.5
+        className="w-full flex items-center justify-center gap-3 px-4 py-3
           bg-white text-gray-800 rounded-[2px] font-medium text-sm
           hover:bg-gray-50 active:bg-gray-100
           transition-colors disabled:opacity-50 disabled:cursor-not-allowed
           border border-gray-200"
       >
-        <GoogleIcon />
-        Войти через Google
+        {isLoading ? (
+          <span className="w-5 h-5 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+        ) : (
+          <GoogleIcon />
+        )}
+        {isLoading ? 'Подождите...' : 'Войти через Google'}
       </button>
-
-      {/* Divider */}
-      <div className="relative my-6">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-brand-black-600" />
-        </div>
-        <div className="relative flex justify-center text-xs">
-          <span className="px-3 bg-brand-black-800 text-brand-charcoal-500 uppercase tracking-widest">
-            или
-          </span>
-        </div>
-      </div>
-
-      {/* Email / password form */}
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <Input
-          label="Email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="example@mail.ru"
-          leftIcon={<Mail className="w-4 h-4" />}
-          required
-          autoComplete="email"
-        />
-        <Input
-          label="Пароль"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          placeholder="••••••••"
-          leftIcon={<Lock className="w-4 h-4" />}
-          required
-          autoComplete="current-password"
-        />
-
-        <div className="flex justify-end">
-          <Link
-            href="/forgot-password"
-            className="text-sm text-brand-pink-500 hover:text-brand-pink-400"
-          >
-            Забыли пароль?
-          </Link>
-        </div>
-
-        <Button type="submit" fullWidth isLoading={isLoading} disabled={isLoading}>
-          Войти
-        </Button>
-      </form>
-
-      <p className="text-center text-brand-charcoal-300 text-sm mt-6">
-        Нет аккаунта?{' '}
-        <Link href="/register" className="text-brand-pink-500 hover:text-brand-pink-400">
-          Зарегистрироваться
-        </Link>
-      </p>
     </div>
   );
 }
-
-// ── Google SVG logo ──────────────────────────────────────────────────────────
 
 function GoogleIcon() {
   return (
@@ -166,16 +81,4 @@ function GoogleIcon() {
       />
     </svg>
   );
-}
-
-// ── Error message translation ────────────────────────────────────────────────
-
-function translateAuthError(message: string): string {
-  if (message.includes('Invalid login credentials'))
-    return 'Неверный email или пароль';
-  if (message.includes('Email not confirmed'))
-    return 'Подтвердите email — проверьте почту';
-  if (message.includes('Too many requests'))
-    return 'Слишком много попыток. Попробуйте позже';
-  return message;
 }

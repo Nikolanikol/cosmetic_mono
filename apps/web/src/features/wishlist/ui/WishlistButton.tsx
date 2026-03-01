@@ -13,17 +13,25 @@ export function WishlistButton({ productId, className }: WishlistButtonProps) {
   const { toggle, isInWishlist } = useWishlistStore();
   const inWishlist = isInWishlist(productId);
 
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggle(productId);
+  };
+
   return (
     <button
-      onClick={() => toggle(productId)}
+      type="button"
+      onClick={handleClick}
       className={cn(
-        'p-2 transition-colors',
+        'transition-all duration-200',
+        'focus:outline-none focus:ring-2 focus:ring-brand-pink-500',
         inWishlist ? 'text-brand-pink-500' : 'text-brand-charcoal-400 hover:text-brand-pink-500',
         className
       )}
       aria-label={inWishlist ? 'Удалить из избранного' : 'Добавить в избранное'}
     >
-      <Heart className={cn('w-5 h-5', inWishlist && 'fill-current')} />
+      <Heart className={cn('w-4 h-4', inWishlist && 'fill-current')} />
     </button>
   );
 }
