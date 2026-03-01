@@ -9,3 +9,4 @@ export * from './brands';
 export * from './reviews';
 export * from './promo-codes';
 export * from './quiz';
+export * from './wishlist';

@@ -114,19 +114,25 @@ export async function getRecommendedProducts(
       name_ru: item.name_ru as string,
       name_en: item.name_en as string,
       slug: item.slug as string,
+      description_ru: (item.description_ru as string | null) ?? null,
+      category_id: item.category_id as string,
+      brand_id: item.brand_id as string,
       is_active: item.is_active as boolean,
       is_featured: item.is_featured as boolean,
       routine_step: item.routine_step as number | null,
       skin_types: (item.skin_types as string[]) || [],
       tags: (item.tags as string[]) || [],
+      meta_title_ru: (item.meta_title_ru as string | null) ?? null,
+      meta_description_ru: (item.meta_description_ru as string | null) ?? null,
       created_at: item.created_at as string,
+      updated_at: (item.updated_at as string | null) ?? null,
       brand: item.brand as { id: string; name: string; slug: string; origin_country: string },
       category: item.category as { id: string; name_ru: string; slug: string },
       default_variant: variants[0] || null,
       primary_image: images.find((img) => img.is_primary) || images[0] || null,
       average_rating: 0,
       review_count: 0,
-    };
+    } as ProductWithDefaultVariant;
   });
 }
 

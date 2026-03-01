@@ -5,18 +5,32 @@
 
 import type { ProductVariant } from './product';
 import type { Profile } from './user';
-import type { UserAddress } from './user';
 
-export type OrderStatus = 
-  | 'pending' 
-  | 'paid' 
-  | 'processing' 
-  | 'shipped' 
-  | 'delivered' 
-  | 'cancelled' 
+export type OrderStatus =
+  | 'pending'
+  | 'paid'
+  | 'processing'
+  | 'shipped'
+  | 'delivered'
+  | 'cancelled'
   | 'refunded';
 
 export type ShippingMethod = 'sdek' | 'pochta' | 'pickup';
+
+/** Shipping address stored as JSONB inside an order — includes recipient info */
+export interface OrderShippingAddress {
+  recipient_name: string;
+  recipient_phone: string;
+  country: string;
+  region: string;
+  city: string;
+  street: string;
+  house: string;
+  building?: string;
+  apartment?: string;
+  zip: string;
+  comment?: string;
+}
 
 export interface Order {
   id: string;
@@ -25,9 +39,10 @@ export interface Order {
   total_rub: number;
   promo_code_id: string | null;
   discount_rub: number;
+  delivery_cost_rub: number;
   yookassa_payment_id: string | null;
   yookassa_payment_url: string | null;
-  shipping_address: UserAddress | null;
+  shipping_address: OrderShippingAddress | null;
   shipping_method: ShippingMethod | null;
   tracking_number: string | null;
   created_at: string;
@@ -44,9 +59,10 @@ export interface OrderInsert {
   total_rub: number;
   promo_code_id?: string | null;
   discount_rub?: number;
+  delivery_cost_rub?: number;
   yookassa_payment_id?: string | null;
   yookassa_payment_url?: string | null;
-  shipping_address?: UserAddress | null;
+  shipping_address?: OrderShippingAddress | null;
   shipping_method?: ShippingMethod | null;
   tracking_number?: string | null;
   created_at?: string;
@@ -57,9 +73,10 @@ export interface OrderUpdate {
   total_rub?: number;
   promo_code_id?: string | null;
   discount_rub?: number;
+  delivery_cost_rub?: number;
   yookassa_payment_id?: string | null;
   yookassa_payment_url?: string | null;
-  shipping_address?: UserAddress | null;
+  shipping_address?: OrderShippingAddress | null;
   shipping_method?: ShippingMethod | null;
   tracking_number?: string | null;
   updated_at?: string;
@@ -143,27 +160,35 @@ export interface DailyOrderStats {
 }
 
 export const ORDER_STATUS_LABELS_RU: Record<OrderStatus, string> = {
-  pending: 'Ожидает оплаты',
-  paid: 'Оплачен',
+  pending:    'Ожидает оплаты',
+  paid:       'Оплачен',
   processing: 'В обработке',
-  shipped: 'Отправлен',
-  delivered: 'Доставлен',
-  cancelled: 'Отменен',
-  refunded: 'Возвращен',
+  shipped:    'Отправлен',
+  delivered:  'Доставлен',
+  cancelled:  'Отменён',
+  refunded:   'Возвращён',
 };
 
 export const ORDER_STATUS_COLORS: Record<OrderStatus, string> = {
-  pending: '#FFA500',
-  paid: '#4CAF50',
+  pending:    '#FFA500',
+  paid:       '#4CAF50',
   processing: '#2196F3',
-  shipped: '#9C27B0',
-  delivered: '#00BCD4',
-  cancelled: '#F44336',
-  refunded: '#795548',
+  shipped:    '#9C27B0',
+  delivered:  '#00BCD4',
+  cancelled:  '#F44336',
+  refunded:   '#795548',
 };
 
 export const SHIPPING_METHOD_LABELS_RU: Record<ShippingMethod, string> = {
-  sdek: 'СДЭК',
+  sdek:   'СДЭК',
   pochta: 'Почта России',
   pickup: 'Самовывоз',
 };
+
+export const SHIPPING_METHOD_COSTS: Record<ShippingMethod, number> = {
+  sdek:   390,
+  pochta: 290,
+  pickup: 0,
+};
+
+export const FREE_DELIVERY_THRESHOLD = 5000;
