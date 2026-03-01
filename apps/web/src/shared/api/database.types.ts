@@ -1,6 +1,7 @@
 /**
  * Supabase Database Types
- * Generated types for type-safe database operations
+ * Manually maintained to match supabase/migrations/000001_initial_schema.sql
+ * + subsequent ALTER TABLE migrations
  */
 
 export type Json =
@@ -23,7 +24,11 @@ export interface Database {
           avatar_url: string | null;
           role: 'customer' | 'admin';
           skin_type: 'dry' | 'oily' | 'combination' | 'sensitive' | 'normal' | null;
+          default_address: Json | null;
+          birth_date: string | null;
+          gender: 'male' | 'female' | 'unspecified' | null;
           created_at: string;
+          updated_at: string | null;
         };
         Insert: {
           id: string;
@@ -33,6 +38,9 @@ export interface Database {
           avatar_url?: string | null;
           role?: 'customer' | 'admin';
           skin_type?: 'dry' | 'oily' | 'combination' | 'sensitive' | 'normal' | null;
+          default_address?: Json | null;
+          birth_date?: string | null;
+          gender?: 'male' | 'female' | 'unspecified' | null;
           created_at?: string;
         };
         Update: {
@@ -42,7 +50,12 @@ export interface Database {
           avatar_url?: string | null;
           role?: 'customer' | 'admin';
           skin_type?: 'dry' | 'oily' | 'combination' | 'sensitive' | 'normal' | null;
+          default_address?: Json | null;
+          birth_date?: string | null;
+          gender?: 'male' | 'female' | 'unspecified' | null;
+          updated_at?: string;
         };
+        Relationships: [];
       };
       brands: {
         Row: {
@@ -54,6 +67,7 @@ export interface Database {
           description: string | null;
           is_featured: boolean;
           created_at: string;
+          updated_at: string | null;
         };
         Insert: {
           id?: string;
@@ -72,7 +86,9 @@ export interface Database {
           logo_url?: string | null;
           description?: string | null;
           is_featured?: boolean;
+          updated_at?: string;
         };
+        Relationships: [];
       };
       categories: {
         Row: {
@@ -103,6 +119,15 @@ export interface Database {
           image_url?: string | null;
           sort_order?: number;
         };
+        Relationships: [
+          {
+            foreignKeyName: 'categories_parent_id_fkey';
+            columns: ['parent_id'];
+            isOneToOne: false;
+            referencedRelation: 'categories';
+            referencedColumns: ['id'];
+          },
+        ];
       };
       products: {
         Row: {
@@ -121,6 +146,7 @@ export interface Database {
           meta_title_ru: string | null;
           meta_description_ru: string | null;
           created_at: string;
+          updated_at: string | null;
         };
         Insert: {
           id?: string;
@@ -153,7 +179,24 @@ export interface Database {
           tags?: string[];
           meta_title_ru?: string | null;
           meta_description_ru?: string | null;
+          updated_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: 'products_brand_id_fkey';
+            columns: ['brand_id'];
+            isOneToOne: false;
+            referencedRelation: 'brands';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'products_category_id_fkey';
+            columns: ['category_id'];
+            isOneToOne: false;
+            referencedRelation: 'categories';
+            referencedColumns: ['id'];
+          },
+        ];
       };
       product_variants: {
         Row: {
@@ -189,6 +232,15 @@ export interface Database {
           attributes?: Json;
           weight_g?: number | null;
         };
+        Relationships: [
+          {
+            foreignKeyName: 'product_variants_product_id_fkey';
+            columns: ['product_id'];
+            isOneToOne: false;
+            referencedRelation: 'products';
+            referencedColumns: ['id'];
+          },
+        ];
       };
       product_images: {
         Row: {
@@ -215,6 +267,15 @@ export interface Database {
           is_primary?: boolean;
           sort_order?: number;
         };
+        Relationships: [
+          {
+            foreignKeyName: 'product_images_product_id_fkey';
+            columns: ['product_id'];
+            isOneToOne: false;
+            referencedRelation: 'products';
+            referencedColumns: ['id'];
+          },
+        ];
       };
       product_ingredients: {
         Row: {
@@ -244,6 +305,15 @@ export interface Database {
           is_highlighted?: boolean;
           safety_rating?: number | null;
         };
+        Relationships: [
+          {
+            foreignKeyName: 'product_ingredients_product_id_fkey';
+            columns: ['product_id'];
+            isOneToOne: false;
+            referencedRelation: 'products';
+            referencedColumns: ['id'];
+          },
+        ];
       };
       cart_items: {
         Row: {
@@ -253,6 +323,7 @@ export interface Database {
           variant_id: string;
           quantity: number;
           created_at: string;
+          updated_at: string | null;
         };
         Insert: {
           id?: string;
@@ -264,7 +335,17 @@ export interface Database {
         };
         Update: {
           quantity?: number;
+          updated_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: 'cart_items_variant_id_fkey';
+            columns: ['variant_id'];
+            isOneToOne: false;
+            referencedRelation: 'product_variants';
+            referencedColumns: ['id'];
+          },
+        ];
       };
       wishlists: {
         Row: {
@@ -280,6 +361,15 @@ export interface Database {
           created_at?: string;
         };
         Update: never;
+        Relationships: [
+          {
+            foreignKeyName: 'wishlists_product_id_fkey';
+            columns: ['product_id'];
+            isOneToOne: false;
+            referencedRelation: 'products';
+            referencedColumns: ['id'];
+          },
+        ];
       };
       orders: {
         Row: {
@@ -289,12 +379,14 @@ export interface Database {
           total_rub: number;
           promo_code_id: string | null;
           discount_rub: number;
+          delivery_cost_rub: number;
           yookassa_payment_id: string | null;
           yookassa_payment_url: string | null;
           shipping_address: Json | null;
           shipping_method: string | null;
           tracking_number: string | null;
           created_at: string;
+          updated_at: string | null;
           paid_at: string | null;
           shipped_at: string | null;
           delivered_at: string | null;
@@ -306,6 +398,7 @@ export interface Database {
           total_rub: number;
           promo_code_id?: string | null;
           discount_rub?: number;
+          delivery_cost_rub?: number;
           yookassa_payment_id?: string | null;
           yookassa_payment_url?: string | null;
           shipping_address?: Json | null;
@@ -321,15 +414,18 @@ export interface Database {
           total_rub?: number;
           promo_code_id?: string | null;
           discount_rub?: number;
+          delivery_cost_rub?: number;
           yookassa_payment_id?: string | null;
           yookassa_payment_url?: string | null;
           shipping_address?: Json | null;
           shipping_method?: string | null;
           tracking_number?: string | null;
+          updated_at?: string;
           paid_at?: string | null;
           shipped_at?: string | null;
           delivered_at?: string | null;
         };
+        Relationships: [];
       };
       order_items: {
         Row: {
@@ -351,6 +447,22 @@ export interface Database {
           created_at?: string;
         };
         Update: never;
+        Relationships: [
+          {
+            foreignKeyName: 'order_items_order_id_fkey';
+            columns: ['order_id'];
+            isOneToOne: false;
+            referencedRelation: 'orders';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'order_items_variant_id_fkey';
+            columns: ['variant_id'];
+            isOneToOne: false;
+            referencedRelation: 'product_variants';
+            referencedColumns: ['id'];
+          },
+        ];
       };
       reviews: {
         Row: {
@@ -364,6 +476,7 @@ export interface Database {
           is_verified_purchase: boolean;
           helpful_count: number;
           created_at: string;
+          updated_at: string | null;
         };
         Insert: {
           id?: string;
@@ -383,7 +496,17 @@ export interface Database {
           body?: string | null;
           skin_type?: string | null;
           helpful_count?: number;
+          updated_at?: string;
         };
+        Relationships: [
+          {
+            foreignKeyName: 'reviews_product_id_fkey';
+            columns: ['product_id'];
+            isOneToOne: false;
+            referencedRelation: 'products';
+            referencedColumns: ['id'];
+          },
+        ];
       };
       promo_codes: {
         Row: {
@@ -397,6 +520,7 @@ export interface Database {
           expires_at: string | null;
           is_active: boolean;
           created_at: string;
+          updated_at: string | null;
         };
         Insert: {
           id?: string;
@@ -419,7 +543,9 @@ export interface Database {
           used_count?: number;
           expires_at?: string | null;
           is_active?: boolean;
+          updated_at?: string;
         };
+        Relationships: [];
       };
       quiz_results: {
         Row: {
@@ -441,13 +567,25 @@ export interface Database {
           created_at?: string;
         };
         Update: never;
+        Relationships: [];
       };
     };
     Views: {
       [_ in never]: never;
     };
     Functions: {
-      [_ in never]: never;
+      increment_promo_code_usage: {
+        Args: { promo_code_id: string };
+        Returns: void;
+      };
+      increment_review_helpful: {
+        Args: { review_id: string };
+        Returns: void;
+      };
+      is_admin: {
+        Args: Record<string, never>;
+        Returns: boolean;
+      };
     };
     Enums: {
       [_ in never]: never;
