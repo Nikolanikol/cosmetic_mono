@@ -1,5 +1,5 @@
-import { CatalogPage } from '@/views/catalog/ui/CatalogPage';
+import { HomePage } from '@/views/home/ui/HomePage';
 
 export default function Home() {
-  return <CatalogPage />;
+  return <HomePage />;
 }

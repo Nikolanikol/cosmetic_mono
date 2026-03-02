@@ -14,6 +14,20 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'lh3.googleusercontent.com',
       },
+      // Placeholder images for development
+      {
+        protocol: 'https',
+        hostname: 'picsum.photos',
+      },
+      // Common product image CDNs
+      {
+        protocol: 'https',
+        hostname: '**.cdninstagram.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.amazonaws.com',
+      },
     ],
   },
   webpack: (config) => {
