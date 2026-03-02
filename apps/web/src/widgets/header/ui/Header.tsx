@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ShoppingBag, Search, Menu, X, User } from 'lucide-react';
@@ -17,6 +18,11 @@ export function Header() {
   const pathname = usePathname();
   const { isMenuOpen, toggleMenu, closeMenu } = useHeaderState();
   const totalItems = useCartStore((s) => s.totalItems());
+
+  // Avoid SSR/client mismatch: localStorage is only available on the client.
+  // Show the cart badge only after hydration.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   return (
     <header className="sticky top-0 z-40 bg-brand-black-900/95 backdrop-blur-md border-b border-brand-black-600">
@@ -62,7 +68,7 @@ export function Header() {
 
             <Link href="/cart" className="relative p-2 text-brand-charcoal-300 hover:text-white transition-colors">
               <ShoppingBag className="w-5 h-5" />
-              {totalItems > 0 && (
+              {mounted && totalItems > 0 && (
                 <span className="absolute top-0.5 right-0.5 w-4 h-4 flex items-center justify-center bg-brand-pink-500 text-white text-[10px] font-bold rounded-full">
                   {totalItems > 9 ? '9+' : totalItems}
                 </span>

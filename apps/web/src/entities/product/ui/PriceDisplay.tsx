@@ -65,12 +65,6 @@ export function PriceDisplay({
         </span>
       )}
 
-      {/* Discount badge */}
-      {hasDiscount && (
-        <span className="ml-1 px-1.5 py-0.5 bg-brand-rose-500 text-white text-xs font-medium">
-          -{Math.round(((price - salePrice) / price) * 100)}%
-        </span>
-      )}
     </div>
   );
 }

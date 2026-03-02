@@ -336,7 +336,7 @@ function CatalogPageContent() {
 
             {/* Products Grid */}
             {isProductsLoading ? (
-              <ProductCardGridSkeleton count={PRODUCTS_PER_PAGE} columns={4} />
+              <ProductCardGridSkeleton count={PRODUCTS_PER_PAGE} columns={viewMode === 'grid' ? 4 : 2} />
             ) : products.length === 0 ? (
               <EmptyState onClearFilters={clearFilters} />
             ) : (
@@ -346,14 +346,14 @@ function CatalogPageContent() {
                     'grid gap-4',
                     viewMode === 'grid'
                       ? 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-4'
-                      : 'grid-cols-1'
+                      : 'grid-cols-1 sm:grid-cols-2'
                   )}
                 >
                   {products.map((product) => (
                     <ProductCard
                       key={product.id}
                       product={product}
-                      variant={viewMode === 'list' ? 'compact' : 'default'}
+                      variant="default"
                     />
                   ))}
                 </div>

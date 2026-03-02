@@ -28,6 +28,33 @@ const nextConfig = {
         protocol: 'https',
         hostname: '**.amazonaws.com',
       },
+      // Brand & retailer Shopify CDNs
+      {
+        protocol: 'https',
+        hostname: 'sokoglam.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'beautyofjoseon.com',
+      },
+      // Google Cloud Storage (INCIDecoder, etc.)
+      {
+        protocol: 'https',
+        hostname: '**.googleapis.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.storage.googleapis.com',
+      },
+      // Brand official sites
+      {
+        protocol: 'https',
+        hostname: 'theordinary.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.cerave.com',
+      },
     ],
   },
   webpack: (config) => {

@@ -91,7 +91,20 @@
       "Bash(git commit:*)",
       "Bash(git push:*)",
       "Bash(xargs basename:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "WebFetch(domain:beautyofjoseon.com)",
+      "WebFetch(domain:sokoglam.com)",
+      "WebFetch(domain:www.cerave.com)",
+      "WebFetch(domain:theordinary.com)",
+      "WebFetch(domain:www.laroche-posay.us)",
+      "WebFetch(domain:ohlolly.com)",
+      "WebFetch(domain:www.dermstore.com)",
+      "WebFetch(domain:static.thcdn.com)",
+      "WebFetch(domain:www.skincupid.us)",
+      "WebFetch(domain:www.ulta.com)",
+      "WebFetch(domain:www.amazon.com)",
+      "WebFetch(domain:www.caretobeauty.com)",
+      "WebFetch(domain:incidecoder.com)"
     ]
   }
 }

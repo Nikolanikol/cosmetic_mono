@@ -196,6 +196,7 @@ const FALLBACK_CATEGORIES = [
 
 function getCategoryEmoji(slug: string): string {
   const map: Record<string, string> = {
+    // English slugs
     'face-care': '✨',
     'skin-care': '✨',
     cleansing: '🫧',
@@ -210,6 +211,16 @@ function getCategoryEmoji(slug: string): string {
     makeup: '💄',
     'lip-care': '💋',
     hair: '💆',
+    // Russian-transliterated slugs (actual DB slugs from migration)
+    'uhod-za-litsom': '✨',
+    ochishchenie: '🫧',
+    tonery: '💦',
+    syvorotki: '💧',
+    kremy: '🧴',
+    maski: '🩹',
+    'uhod-za-glazami': '👁️',
+    makiyazh: '💄',
+    'dlya-tela': '🛁',
   };
   return map[slug] ?? '🌿';
 }
