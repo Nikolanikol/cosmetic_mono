@@ -4,6 +4,12 @@ const path = require('path');
 const nextConfig = {
   // Transpile TypeScript packages outside the app directory
   transpilePackages: ['@packages/types', '@packages/validators', '@packages/api'],
+
+  // IMPORTANT for Vercel monorepo: tell Next.js to trace files from the repo
+  // root so that packages/ directory gets included in serverless bundles.
+  // Without this, dynamic routes fail to deploy because packages/ is outside
+  // apps/web/ and Next.js's file tracer ignores it.
+  outputFileTracingRoot: path.join(__dirname, '../../'),
   images: {
     remotePatterns: [
       {
