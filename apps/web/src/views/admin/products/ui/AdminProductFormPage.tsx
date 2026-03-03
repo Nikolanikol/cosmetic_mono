@@ -9,7 +9,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { ArrowLeft, Plus, Trash2, Sparkles, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Plus, Trash2, Sparkles, AlertCircle, Loader2 } from 'lucide-react';
 import { getBrands } from '@packages/api/brands';
 import { getCategories } from '@packages/api/products';
 import { getProductById } from '@packages/api/products';
@@ -153,6 +153,8 @@ export function AdminProductFormPage({ mode, productId }: Props) {
   const [removedIngredientIds, setRemovedIngredientIds]   = useState<string[]>([]);
   const [removedImageIds, setRemovedImageIds]             = useState<string[]>([]);
   const [submitError, setSubmitError] = useState('');
+  const [seoLoading, setSeoLoading]   = useState(false);
+  const [seoGenerated, setSeoGenerated] = useState(false);
 
   // Populate form in edit mode
   useEffect(() => {
@@ -210,17 +212,82 @@ export function AdminProductFormPage({ mode, productId }: Props) {
     setField('slug', slugify(form.name_ru));
   }
 
-  function generateSeo() {
+  async function generateSeo() {
     const brand = brands.find((b) => b.id === form.brand_id);
     const cat   = categories.find((c) => c.id === form.category_id);
-    const brandName = brand?.name ?? 'бренда';
-    const catName   = cat?.name_ru ?? 'косметики';
-    setField('meta_title_ru',
-      `${form.name_ru} — купить ${brandName} | K&E Beauty`
-    );
-    setField('meta_description_ru',
-      `Купить ${form.name_ru} от ${brandName} в категории ${catName}. Доставка по всему миру. Только оригинальная продукция.`
-    );
+    setSeoLoading(true);
+    setSeoGenerated(false);
+    try {
+      const res = await fetch('/api/admin/generate-seo', {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name_ru:       form.name_ru,
+          name_en:       form.name_en || undefined,
+          brand_name:    brand?.name ?? '',
+          category_name: cat?.name_ru ?? '',
+          description_ru: form.description_ru || undefined,
+          skin_types:    form.skin_types,
+          tags:          form.tags,
+          routine_step:  form.routine_step ? parseInt(form.routine_step) : null,
+          ingredients:   ingredients.filter((i) => i.inci_name).map((i) => ({
+            inci_name:      i.inci_name,
+            name_ru:        i.name_ru || undefined,
+            purpose_ru:     i.purpose_ru || undefined,
+            is_highlighted: i.is_highlighted,
+          })),
+        }),
+      });
+      if (!res.ok) throw new Error('Generation failed');
+      const data = await res.json() as {
+        meta_title_ru: string;
+        meta_description_ru: string;
+        description_ru: string;
+      };
+      setField('meta_title_ru', data.meta_title_ru);
+      setField('meta_description_ru', data.meta_description_ru);
+      // Fill description_ru only if empty
+      if (!form.description_ru && data.description_ru) {
+        setField('description_ru', data.description_ru);
+      }
+      setSeoGenerated(true);
+    } catch (e) {
+      console.error('[generateSeo]', e);
+    } finally {
+      setSeoLoading(false);
+    }
+  }
+
+  // Helper: call SEO API and return generated data (used in submit)
+  async function fetchGeneratedSeo() {
+    const brand = brands.find((b) => b.id === form.brand_id);
+    const cat   = categories.find((c) => c.id === form.category_id);
+    const res = await fetch('/api/admin/generate-seo', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name_ru:       form.name_ru,
+        name_en:       form.name_en || undefined,
+        brand_name:    brand?.name ?? '',
+        category_name: cat?.name_ru ?? '',
+        description_ru: form.description_ru || undefined,
+        skin_types:    form.skin_types,
+        tags:          form.tags,
+        routine_step:  form.routine_step ? parseInt(form.routine_step) : null,
+        ingredients:   ingredients.filter((i) => i.inci_name).map((i) => ({
+          inci_name:      i.inci_name,
+          name_ru:        i.name_ru || undefined,
+          purpose_ru:     i.purpose_ru || undefined,
+          is_highlighted: i.is_highlighted,
+        })),
+      }),
+    });
+    if (!res.ok) return null;
+    return res.json() as Promise<{
+      meta_title_ru: string;
+      meta_description_ru: string;
+      description_ru: string;
+    }>;
   }
 
   // ── Submit ───────────────────────────────────────────────────────────────────
@@ -248,6 +315,24 @@ export function AdminProductFormPage({ mode, productId }: Props) {
       if (mode === 'create') {
         // 1. Create product
         const product = await createProduct(supabaseBrowser, base);
+
+        // 1b. Auto-generate SEO if meta fields are empty
+        if (!form.meta_title_ru) {
+          try {
+            const seo = await fetchGeneratedSeo();
+            if (seo) {
+              await updateProduct(supabaseBrowser, product.id, {
+                meta_title_ru:       seo.meta_title_ru || null,
+                meta_description_ru: seo.meta_description_ru || null,
+                ...(!form.description_ru && seo.description_ru
+                  ? { description_ru: seo.description_ru }
+                  : {}),
+              });
+            }
+          } catch {
+            // Non-critical — continue without SEO auto-generation
+          }
+        }
 
         // 2. Create variants
         for (const v of variants.filter((v) => v.name_ru && v.sku && v.price_rub)) {
@@ -430,9 +515,9 @@ export function AdminProductFormPage({ mode, productId }: Props) {
           <textarea
             value={form.description_ru}
             onChange={(e) => setField('description_ru', e.target.value)}
-            rows={4}
-            placeholder="Подробное описание товара…"
-            className={cn(inputCls, 'resize-none')}
+            rows={8}
+            placeholder="Подробное описание товара… (AI заполнит при создании если оставить пустым)"
+            className={cn(inputCls, 'resize-y')}
           />
         </Field>
       </FormSection>
@@ -523,15 +608,22 @@ export function AdminProductFormPage({ mode, productId }: Props) {
 
       {/* ── Section: SEO ─────────────────────────────────────────────── */}
       <FormSection title="SEO">
-        <div className="flex justify-end mb-1">
+        <div className="flex items-center justify-between mb-1">
+          <p className="text-xs text-brand-charcoal-500">
+            {seoGenerated
+              ? <span className="text-brand-pink-400">✨ Сгенерировано AI</span>
+              : 'Заполните основное и нажмите «Сгенерировать»'}
+          </p>
           <button
             type="button"
             onClick={generateSeo}
-            disabled={!form.name_ru || !form.brand_id}
+            disabled={!form.name_ru || !form.brand_id || seoLoading}
             className="inline-flex items-center gap-1.5 text-xs text-brand-pink-400 hover:text-brand-pink-300 disabled:opacity-40 transition-colors"
           >
-            <Sparkles className="w-3.5 h-3.5" />
-            Сгенерировать авто
+            {seoLoading
+              ? <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              : <Sparkles className="w-3.5 h-3.5" />}
+            {seoLoading ? 'Генерация…' : 'Сгенерировать AI'}
           </button>
         </div>
         <Field label="Meta-заголовок">
