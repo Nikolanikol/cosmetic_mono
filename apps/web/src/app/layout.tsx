@@ -13,7 +13,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  console.log("hello");
   return (
     <html lang="ru">
       <body className="bg-brand-black-900 text-white min-h-screen flex flex-col">
