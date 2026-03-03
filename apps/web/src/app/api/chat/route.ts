@@ -112,6 +112,10 @@ ${list}
 - Используй emoji умеренно ✨${productContext}`;
 
   // ── Groq streaming ──────────────────────────────────────────────────────────
+  if (!process.env.GROQ_API_KEY) {
+    return new Response('GROQ_API_KEY is not configured', { status: 503 });
+  }
+
   const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
   const groqStream = await groq.chat.completions.create({
