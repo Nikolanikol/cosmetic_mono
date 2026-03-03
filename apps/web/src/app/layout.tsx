@@ -1,10 +1,11 @@
-import type { Metadata } from 'next';
-import './globals.css';
-import { Providers } from './providers';
+import type { Metadata } from "next";
+import "./globals.css";
+import { Providers } from "./providers";
 
 export const metadata: Metadata = {
-  title: 'K-Beauty & European Cosmetics | Premium Skincare Store',
-  description: 'Premium Korean and European cosmetics in Russia. Authentic K-beauty products and luxury European skincare brands.',
+  title: "K-Beauty & European Cosmetics | Premium Skincare Store",
+  description:
+    "Premium Korean and European cosmetics in Russia. Authentic K-beauty products and luxury European skincare brands.",
 };
 
 export default function RootLayout({
@@ -12,6 +13,7 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  console.log("hello");
   return (
     <html lang="ru">
       <body className="bg-brand-black-900 text-white min-h-screen flex flex-col">
