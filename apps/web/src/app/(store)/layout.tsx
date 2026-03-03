@@ -1,5 +1,6 @@
 import { Header } from '@/widgets/header';
 import { Footer } from '@/widgets/footer';
+import { ChatAssistant } from '@/widgets/chat-assistant';
 
 export default function StoreLayout({
   children,
@@ -11,6 +12,7 @@ export default function StoreLayout({
       <Header />
       <main className="flex-1">{children}</main>
       <Footer />
+      <ChatAssistant />
     </div>
   );
 }
