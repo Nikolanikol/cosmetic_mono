@@ -1,4 +1,4 @@
-# JymFlex — Cosmetics E-Commerce Platform
+# Cosmetics E-Commerce Platform
 
 > Full-stack e-commerce application for a cosmetics store targeting Russian-speaking markets. Built with Feature-Sliced Design architecture, AI-powered product assistant, and YooKassa payment integration.
 
