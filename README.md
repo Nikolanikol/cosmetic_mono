@@ -2,6 +2,12 @@
 
 > Full-stack e-commerce application for a cosmetics store targeting Russian-speaking markets. Built with Feature-Sliced Design architecture, AI-powered product assistant, and YooKassa payment integration.
 
+## Screenshots
+
+![Screen 1](public/screenshots/screen1.png)
+![Screen 2](public/screenshots/screen2.png)
+![Screen 3](public/screenshots/screen3.png)
+
 ---
 
 ## Features
