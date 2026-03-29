@@ -1,5 +1,7 @@
 # Cosmetics E-Commerce Platform
 
+> **Live demo:** [cosmetic-mono-ahlz.vercel.app](https://cosmetic-mono-ahlz.vercel.app)
+>
 > Full-stack e-commerce application for a cosmetics store targeting Russian-speaking markets. Built with Feature-Sliced Design architecture, AI-powered product assistant, and YooKassa payment integration.
 
 ## Screenshots
