@@ -34,7 +34,7 @@ ENV YOOKASSA_WEBHOOK_SECRET=$YOOKASSA_WEBHOOK_SECRET
 ENV GROQ_API_KEY=$GROQ_API_KEY
 ENV NEXT_TELEMETRY_DISABLED=1
 
-RUN cd apps/web && npm run build
+RUN cd apps/web && npm run build && mkdir -p /app/apps/web/public
 
 FROM base AS runner
 WORKDIR /app
