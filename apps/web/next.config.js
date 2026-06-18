@@ -2,6 +2,8 @@ const path = require('path');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'standalone',
+
   // Transpile TypeScript packages outside the app directory
   transpilePackages: ['@packages/types', '@packages/validators', '@packages/api'],
 
