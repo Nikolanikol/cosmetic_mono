@@ -17,10 +17,11 @@ const clientSchema = z.object({
 
 // Server-side: all vars including secrets
 const serverSchema = clientSchema.extend({
-  SUPABASE_SERVICE_ROLE_KEY: z.string().min(1, 'SUPABASE_SERVICE_ROLE_KEY is required'),
-  YOOKASSA_SHOP_ID: z.string().min(1, 'YOOKASSA_SHOP_ID is required'),
-  YOOKASSA_SECRET_KEY: z.string().min(1, 'YOOKASSA_SECRET_KEY is required'),
-  YOOKASSA_WEBHOOK_SECRET: z.string().min(1, 'YOOKASSA_WEBHOOK_SECRET is required'),
+  SUPABASE_SERVICE_ROLE_KEY: z.string().min(1).catch(''),
+  YOOKASSA_SHOP_ID: z.string().optional().default(''),
+  YOOKASSA_SECRET_KEY: z.string().optional().default(''),
+  YOOKASSA_WEBHOOK_SECRET: z.string().optional().default(''),
+  GROQ_API_KEY: z.string().optional().default(''),
 });
 
 const isServer = typeof window === 'undefined';
