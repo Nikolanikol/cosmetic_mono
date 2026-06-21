@@ -50,7 +50,7 @@ export interface QuizResultInsert {
 export interface QuizResultWithProducts extends QuizResult {
   recommended_products: {
     id: string;
-    name_ru: string;
+    name: string;
     slug: string;
     brand_name: string;
     price_rub: number;

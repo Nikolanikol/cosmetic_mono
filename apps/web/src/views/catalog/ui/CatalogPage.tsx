@@ -30,7 +30,6 @@ const SORT_OPTIONS: { value: ProductSortOption; label: string }[] = [
   { value: 'price_asc', label: 'Цена: по возрастанию' },
   { value: 'price_desc', label: 'Цена: по убыванию' },
   { value: 'newest', label: 'Новинки' },
-  { value: 'rating', label: 'По рейтингу' },
 ];
 
 const PRODUCTS_PER_PAGE = 24;
@@ -407,7 +406,7 @@ function EmptyState({ onClearFilters }: { onClearFilters: () => void }) {
       </p>
       <div className="flex gap-3">
         <Button onClick={onClearFilters}>Сбросить фильтры</Button>
-        <Button variant="outline" href="/quiz">
+        <Button variant="outline" href="/en/quiz">
           Пройти тест на тип кожи
         </Button>
       </div>
@@ -519,21 +518,6 @@ function parseFiltersFromURL(searchParams: URLSearchParams): ProductFilters {
 
   const priceMax = searchParams.get('price_max');
   if (priceMax) filters.price_max = parseInt(priceMax, 10);
-
-  const skinType = searchParams.get('skin_type');
-  if (skinType) filters.skin_type = skinType as ProductFilters['skin_type'];
-
-  const rating = searchParams.get('rating');
-  if (rating) filters.rating = parseInt(rating, 10);
-
-  const saleOnly = searchParams.get('sale_only');
-  if (saleOnly) filters.sale_only = saleOnly === 'true';
-
-  const originCountry = searchParams.get('origin_country');
-  if (originCountry) filters.origin_country = originCountry.split(',') as ProductFilters['origin_country'];
-
-  const tags = searchParams.get('tags');
-  if (tags) filters.tags = tags.split(',') as ProductFilters['tags'];
 
   const search = searchParams.get('search');
   if (search) filters.search = search;

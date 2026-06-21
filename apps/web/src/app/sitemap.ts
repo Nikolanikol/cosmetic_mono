@@ -21,22 +21,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const brandList =
     brands.status === 'fulfilled' ? brands.value : [];
 
+  const loc = `${baseUrl}/en`;
+
   // Static pages
   const staticPages: MetadataRoute.Sitemap = [
     {
-      url: baseUrl,
+      url: loc,
       lastModified: new Date(),
       changeFrequency: 'daily',
       priority: 1,
     },
     {
-      url: `${baseUrl}/catalog`,
+      url: `${loc}/catalog`,
       lastModified: new Date(),
       changeFrequency: 'daily',
       priority: 0.9,
     },
     {
-      url: `${baseUrl}/quiz`,
+      url: `${loc}/quiz`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
       priority: 0.6,
@@ -45,7 +47,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Product pages
   const productPages: MetadataRoute.Sitemap = products.map((product) => ({
-    url: `${baseUrl}/product/${product.slug}`,
+    url: `${loc}/product/${product.slug}`,
     lastModified: product.created_at ? new Date(product.created_at) : new Date(),
     changeFrequency: 'weekly' as const,
     priority: 0.8,
@@ -53,7 +55,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Category filter pages
   const categoryPages: MetadataRoute.Sitemap = cats.map((cat) => ({
-    url: `${baseUrl}/catalog?category=${cat.slug}`,
+    url: `${loc}/catalog?category=${cat.slug}`,
     lastModified: new Date(),
     changeFrequency: 'weekly' as const,
     priority: 0.7,
@@ -61,7 +63,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // Brand filter pages
   const brandPages: MetadataRoute.Sitemap = brandList.map((brand) => ({
-    url: `${baseUrl}/catalog?brand=${brand.slug}`,
+    url: `${loc}/catalog?brand=${brand.slug}`,
     lastModified: new Date(),
     changeFrequency: 'weekly' as const,
     priority: 0.65,

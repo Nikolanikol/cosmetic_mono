@@ -52,7 +52,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
             <div className="flex flex-col items-center justify-center h-full gap-4 py-12">
               <ShoppingBag className="w-12 h-12 text-brand-black-600" />
               <p className="text-brand-charcoal-300">Корзина пуста</p>
-              <Button href="/catalog" onClick={onClose} variant="outline" size="sm">
+              <Button href="/en/catalog" onClick={onClose} variant="outline" size="sm">
                 Перейти в каталог
               </Button>
             </div>
@@ -72,7 +72,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               <span className="text-brand-charcoal-300">Итого</span>
               <span className="text-white font-semibold text-lg">{formatPrice(totalPrice())}</span>
             </div>
-            <Button href="/checkout" onClick={onClose} fullWidth>
+            <Button href="/en/checkout" onClick={onClose} fullWidth>
               Оформить заказ
             </Button>
           </div>

@@ -50,7 +50,7 @@ export const productVariantAttributeSchema = z.record(z.string(), z.string().opt
 
 export const productVariantSchema = z.object({
   sku: z.string().min(1, 'SKU обязателен').max(50, 'Максимум 50 символов'),
-  name_ru: z.string().min(1, 'Название варианта обязательно').max(100, 'Максимум 100 символов'),
+  name: z.string().min(1, 'Название варианта обязательно').max(100, 'Максимум 100 символов'),
   price_rub: z.coerce.number().min(0, 'Цена не может быть отрицательной'),
   sale_price_rub: z.coerce.number().min(0).nullable().optional(),
   stock: z.coerce.number().int().min(0, 'Количество не может быть отрицательным').default(0),
@@ -71,14 +71,13 @@ export const productIngredientSchema = z.object({
 export type ProductIngredientFormData = z.infer<typeof productIngredientSchema>;
 
 export const productCreateSchema = z.object({
-  name_ru: z.string().min(1, 'Название на русском обязательно').max(200, 'Максимум 200 символов'),
-  name_en: z.string().min(1, 'Название на английском обязательно').max(200, 'Максимум 200 символов'),
+  name: z.string().min(1, 'Product name is required').max(200, 'Max 200 characters'),
   slug: z
     .string()
     .min(1, 'Slug обязателен')
     .max(200, 'Максимум 200 символов')
     .regex(/^[a-z0-9-]+$/, 'Slug может содержать только строчные буквы, цифры и дефисы'),
-  description_ru: z.string().max(5000, 'Максимум 5000 символов').optional().nullable(),
+  description: z.string().max(5000, 'Max 5000 characters').optional().nullable(),
   category_id: z.string().uuid('Выберите категорию'),
   brand_id: z.string().uuid('Выберите бренд'),
   is_active: z.boolean().default(true),
@@ -86,8 +85,8 @@ export const productCreateSchema = z.object({
   routine_step: z.coerce.number().int().min(1).max(10).nullable().optional(),
   skin_types: z.array(z.enum(skinTypes as [string, ...string[]])).default([]),
   tags: z.array(z.enum(productTags as [string, ...string[]])).default([]),
-  meta_title_ru: z.string().max(70, 'Максимум 70 символов').optional().nullable(),
-  meta_description_ru: z.string().max(160, 'Максимум 160 символов').optional().nullable(),
+  meta_title: z.string().max(70, 'Max 70 characters').optional().nullable(),
+  meta_description: z.string().max(160, 'Max 160 characters').optional().nullable(),
   variants: z.array(productVariantSchema).min(1, 'Добавьте хотя бы один вариант'),
   ingredients: z.array(productIngredientSchema).default([]),
 });
@@ -116,8 +115,7 @@ export const brandCreateSchema = z.object({
 export type BrandCreateFormData = z.infer<typeof brandCreateSchema>;
 
 export const categoryCreateSchema = z.object({
-  name_ru: z.string().min(1, 'Название на русском обязательно').max(100, 'Максимум 100 символов'),
-  name_en: z.string().min(1, 'Название на английском обязательно').max(100, 'Максимум 100 символов'),
+  name: z.string().min(1, 'Category name is required').max(100, 'Max 100 characters'),
   slug: z
     .string()
     .min(1, 'Slug обязателен')

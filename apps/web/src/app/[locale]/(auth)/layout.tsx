@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { ROUTES } from '@/shared/config/routes';
 
 export default function AuthLayout({
   children,
@@ -9,7 +10,7 @@ export default function AuthLayout({
     <div className="min-h-screen bg-brand-black-900 flex flex-col">
       {/* Minimal header */}
       <header className="border-b border-brand-black-600 px-6 py-4">
-        <Link href="/" className="text-xl font-bold text-gradient-pink">
+        <Link href={ROUTES.HOME} className="text-xl font-bold text-gradient-pink">
           K&amp;E Beauty
         </Link>
       </header>

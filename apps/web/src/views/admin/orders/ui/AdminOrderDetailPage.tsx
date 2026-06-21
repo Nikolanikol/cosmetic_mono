@@ -111,9 +111,9 @@ export function AdminOrderDetailPage({ orderId }: { orderId: string }) {
                   return (
                     <tr key={item.id} className="border-b border-brand-black-600/40">
                       <td className="py-3 pr-4">
-                        <p className="text-white text-xs font-medium">{snap.product_name_ru}</p>
+                        <p className="text-white text-xs font-medium">{snap.product_name}</p>
                         <p className="text-brand-charcoal-500 text-xs mt-0.5">
-                          {snap.variant_name_ru}
+                          {snap.variant_name}
                           {snap.variant_attributes?.volume ? ` · ${snap.variant_attributes.volume}` : ''}
                         </p>
                         <p className="text-brand-charcoal-600 text-xs">{snap.brand_name}</p>

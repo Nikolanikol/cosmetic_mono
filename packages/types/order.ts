@@ -97,11 +97,10 @@ export interface OrderItem {
 
 export interface ProductSnapshot {
   product_id: string;
-  product_name_ru: string;
-  product_name_en: string;
+  product_name: string;
   product_slug: string;
   brand_name: string;
-  variant_name_ru: string;
+  variant_name: string;
   variant_sku: string;
   variant_attributes: Record<string, string>;
   image_url: string | null;

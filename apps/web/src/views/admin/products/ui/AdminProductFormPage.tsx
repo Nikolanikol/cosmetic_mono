@@ -64,7 +64,7 @@ const PRODUCT_TAGS: ProductTag[] = [
 
 interface VariantForm {
   id?: string;
-  name_ru: string;
+  name: string;
   sku: string;
   price_rub: string;
   sale_price_rub: string;
@@ -89,10 +89,9 @@ interface IngredientForm {
 }
 
 interface ProductForm {
-  name_ru: string;
-  name_en: string;
+  name: string;
   slug: string;
-  description_ru: string;
+  description: string;
   category_id: string;
   brand_id: string;
   is_active: boolean;
@@ -100,21 +99,21 @@ interface ProductForm {
   routine_step: string;
   skin_types: SkinType[];
   tags: ProductTag[];
-  meta_title_ru: string;
-  meta_description_ru: string;
+  meta_title: string;
+  meta_description: string;
 }
 
 const EMPTY_FORM: ProductForm = {
-  name_ru: '', name_en: '', slug: '', description_ru: '',
+  name: '', slug: '', description: '',
   category_id: '', brand_id: '',
   is_active: true, is_featured: false,
   routine_step: '',
   skin_types: [], tags: [],
-  meta_title_ru: '', meta_description_ru: '',
+  meta_title: '', meta_description: '',
 };
 
 const EMPTY_VARIANT: VariantForm = {
-  name_ru: '', sku: '', price_rub: '', sale_price_rub: '', stock: '0', volume: '',
+  name: '', sku: '', price_rub: '', sale_price_rub: '', stock: '0', volume: '',
 };
 
 const EMPTY_INGREDIENT: IngredientForm = {
@@ -161,10 +160,9 @@ export function AdminProductFormPage({ mode, productId }: Props) {
     if (!existingProduct) return;
     const p = existingProduct;
     setForm({
-      name_ru:            p.name_ru,
-      name_en:            p.name_en,
+      name:               p.name,
       slug:               p.slug,
-      description_ru:     p.description_ru ?? '',
+      description:        p.description ?? '',
       category_id:        p.category_id,
       brand_id:           p.brand_id,
       is_active:          p.is_active,
@@ -172,12 +170,12 @@ export function AdminProductFormPage({ mode, productId }: Props) {
       routine_step:       p.routine_step?.toString() ?? '',
       skin_types:         p.skin_types ?? [],
       tags:               p.tags ?? [],
-      meta_title_ru:      p.meta_title_ru ?? '',
-      meta_description_ru: p.meta_description_ru ?? '',
+      meta_title:         p.meta_title ?? '',
+      meta_description:   p.meta_description ?? '',
     });
     setVariants(p.variants.map((v) => ({
       id:            v.id,
-      name_ru:       v.name_ru,
+      name:          v.name,
       sku:           v.sku,
       price_rub:     v.price_rub.toString(),
       sale_price_rub: v.sale_price_rub?.toString() ?? '',
@@ -209,7 +207,7 @@ export function AdminProductFormPage({ mode, productId }: Props) {
     arr.includes(item) ? arr.filter((x) => x !== item) : [...arr, item];
 
   function autoSlug() {
-    setField('slug', slugify(form.name_ru));
+    setField('slug', slugify(form.name));
   }
 
   async function generateSeo() {
@@ -222,11 +220,10 @@ export function AdminProductFormPage({ mode, productId }: Props) {
         method:  'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name_ru:       form.name_ru,
-          name_en:       form.name_en || undefined,
+          name:          form.name,
           brand_name:    brand?.name ?? '',
-          category_name: cat?.name_ru ?? '',
-          description_ru: form.description_ru || undefined,
+          category_name: cat?.name ?? '',
+          description:   form.description || undefined,
           skin_types:    form.skin_types,
           tags:          form.tags,
           routine_step:  form.routine_step ? parseInt(form.routine_step) : null,
@@ -240,15 +237,14 @@ export function AdminProductFormPage({ mode, productId }: Props) {
       });
       if (!res.ok) throw new Error('Generation failed');
       const data = await res.json() as {
-        meta_title_ru: string;
-        meta_description_ru: string;
-        description_ru: string;
+        meta_title: string;
+        meta_description: string;
+        description: string;
       };
-      setField('meta_title_ru', data.meta_title_ru);
-      setField('meta_description_ru', data.meta_description_ru);
-      // Fill description_ru only if empty
-      if (!form.description_ru && data.description_ru) {
-        setField('description_ru', data.description_ru);
+      setField('meta_title', data.meta_title);
+      setField('meta_description', data.meta_description);
+      if (!form.description && data.description) {
+        setField('description', data.description);
       }
       setSeoGenerated(true);
     } catch (e) {
@@ -266,11 +262,10 @@ export function AdminProductFormPage({ mode, productId }: Props) {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        name_ru:       form.name_ru,
-        name_en:       form.name_en || undefined,
+        name:          form.name,
         brand_name:    brand?.name ?? '',
-        category_name: cat?.name_ru ?? '',
-        description_ru: form.description_ru || undefined,
+        category_name: cat?.name ?? '',
+        description:   form.description || undefined,
         skin_types:    form.skin_types,
         tags:          form.tags,
         routine_step:  form.routine_step ? parseInt(form.routine_step) : null,
@@ -284,9 +279,9 @@ export function AdminProductFormPage({ mode, productId }: Props) {
     });
     if (!res.ok) return null;
     return res.json() as Promise<{
-      meta_title_ru: string;
-      meta_description_ru: string;
-      description_ru: string;
+      meta_title: string;
+      meta_description: string;
+      description: string;
     }>;
   }
 
@@ -297,10 +292,9 @@ export function AdminProductFormPage({ mode, productId }: Props) {
       setSubmitError('');
 
       const base = {
-        name_ru:             form.name_ru,
-        name_en:             form.name_en,
+        name:                form.name,
         slug:                form.slug,
-        description_ru:      form.description_ru || null,
+        description:         form.description || null,
         category_id:         form.category_id,
         brand_id:            form.brand_id,
         is_active:           form.is_active,
@@ -308,8 +302,8 @@ export function AdminProductFormPage({ mode, productId }: Props) {
         routine_step:        form.routine_step ? parseInt(form.routine_step) : null,
         skin_types:          form.skin_types,
         tags:                form.tags,
-        meta_title_ru:       form.meta_title_ru || null,
-        meta_description_ru: form.meta_description_ru || null,
+        meta_title:          form.meta_title || null,
+        meta_description:    form.meta_description || null,
       };
 
       if (mode === 'create') {
@@ -317,15 +311,15 @@ export function AdminProductFormPage({ mode, productId }: Props) {
         const product = await createProduct(supabaseBrowser, base);
 
         // 1b. Auto-generate SEO if meta fields are empty
-        if (!form.meta_title_ru) {
+        if (!form.meta_title) {
           try {
             const seo = await fetchGeneratedSeo();
             if (seo) {
               await updateProduct(supabaseBrowser, product.id, {
-                meta_title_ru:       seo.meta_title_ru || null,
-                meta_description_ru: seo.meta_description_ru || null,
-                ...(!form.description_ru && seo.description_ru
-                  ? { description_ru: seo.description_ru }
+                meta_title:          seo.meta_title || null,
+                meta_description:    seo.meta_description || null,
+                ...(!form.description && seo.description
+                  ? { description: seo.description }
                   : {}),
               });
             }
@@ -335,10 +329,10 @@ export function AdminProductFormPage({ mode, productId }: Props) {
         }
 
         // 2. Create variants
-        for (const v of variants.filter((v) => v.name_ru && v.sku && v.price_rub)) {
+        for (const v of variants.filter((v) => v.name && v.sku && v.price_rub)) {
           await createProductVariant(supabaseBrowser, {
             product_id:     product.id,
-            name_ru:        v.name_ru,
+            name:           v.name,
             sku:            v.sku,
             price_rub:      parseFloat(v.price_rub),
             sale_price_rub: v.sale_price_rub ? parseFloat(v.sale_price_rub) : null,
@@ -380,10 +374,10 @@ export function AdminProductFormPage({ mode, productId }: Props) {
         for (const id of removedVariantIds) {
           await deleteProductVariant(supabaseBrowser, id);
         }
-        for (const v of variants.filter((v) => v.name_ru && v.sku && v.price_rub)) {
+        for (const v of variants.filter((v) => v.name && v.sku && v.price_rub)) {
           if (v.id) {
             await updateProductVariant(supabaseBrowser, v.id, {
-              name_ru:        v.name_ru,
+              name:           v.name,
               sku:            v.sku,
               price_rub:      parseFloat(v.price_rub),
               sale_price_rub: v.sale_price_rub ? parseFloat(v.sale_price_rub) : null,
@@ -393,7 +387,7 @@ export function AdminProductFormPage({ mode, productId }: Props) {
           } else {
             await createProductVariant(supabaseBrowser, {
               product_id:     productId,
-              name_ru:        v.name_ru,
+              name:           v.name,
               sku:            v.sku,
               price_rub:      parseFloat(v.price_rub),
               sale_price_rub: v.sale_price_rub ? parseFloat(v.sale_price_rub) : null,
@@ -451,7 +445,7 @@ export function AdminProductFormPage({ mode, productId }: Props) {
   });
 
   const isEdit   = mode === 'edit';
-  const canSave  = !!form.name_ru && !!form.slug && !!form.category_id && !!form.brand_id;
+  const canSave  = !!form.name && !!form.slug && !!form.category_id && !!form.brand_id;
 
   // ── Render ───────────────────────────────────────────────────────────────────
 
@@ -473,24 +467,14 @@ export function AdminProductFormPage({ mode, productId }: Props) {
 
       {/* ── Section: Основное ─────────────────────────────────────────── */}
       <FormSection title="Основное">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Field label="Название (рус) *">
-            <input
-              value={form.name_ru}
-              onChange={(e) => setField('name_ru', e.target.value)}
-              placeholder="COSRX Advanced Snail Essence"
-              className={inputCls}
-            />
-          </Field>
-          <Field label="Название (eng)">
-            <input
-              value={form.name_en}
-              onChange={(e) => setField('name_en', e.target.value)}
-              placeholder="COSRX Advanced Snail 96 Mucin Power Essence"
-              className={inputCls}
-            />
-          </Field>
-        </div>
+        <Field label="Название *">
+          <input
+            value={form.name}
+            onChange={(e) => setField('name', e.target.value)}
+            placeholder="COSRX Advanced Snail 96 Mucin Power Essence"
+            className={inputCls}
+          />
+        </Field>
 
         <Field label="Slug *">
           <div className="flex gap-2">
@@ -503,7 +487,7 @@ export function AdminProductFormPage({ mode, productId }: Props) {
             <button
               type="button"
               onClick={autoSlug}
-              disabled={!form.name_ru}
+              disabled={!form.name}
               className="px-3 py-2 bg-brand-black-700 border border-brand-black-600 rounded-lg text-xs text-brand-charcoal-300 hover:text-white disabled:opacity-40 transition-colors"
             >
               Авто
@@ -513,8 +497,8 @@ export function AdminProductFormPage({ mode, productId }: Props) {
 
         <Field label="Описание">
           <textarea
-            value={form.description_ru}
-            onChange={(e) => setField('description_ru', e.target.value)}
+            value={form.description}
+            onChange={(e) => setField('description', e.target.value)}
             rows={8}
             placeholder="Подробное описание товара… (AI заполнит при создании если оставить пустым)"
             className={cn(inputCls, 'resize-y')}
@@ -546,7 +530,7 @@ export function AdminProductFormPage({ mode, productId }: Props) {
               <option value="">— выберите —</option>
               {categories.map((c) => (
                 <option key={c.id} value={c.id}>
-                  {c.parent_id ? `  └ ${c.name_ru}` : c.name_ru}
+                  {c.parent_id ? `  └ ${c.name}` : c.name}
                 </option>
               ))}
             </select>
@@ -617,7 +601,7 @@ export function AdminProductFormPage({ mode, productId }: Props) {
           <button
             type="button"
             onClick={generateSeo}
-            disabled={!form.name_ru || !form.brand_id || seoLoading}
+            disabled={!form.name || !form.brand_id || seoLoading}
             className="inline-flex items-center gap-1.5 text-xs text-brand-pink-400 hover:text-brand-pink-300 disabled:opacity-40 transition-colors"
           >
             {seoLoading
@@ -628,22 +612,22 @@ export function AdminProductFormPage({ mode, productId }: Props) {
         </div>
         <Field label="Meta-заголовок">
           <input
-            value={form.meta_title_ru}
-            onChange={(e) => setField('meta_title_ru', e.target.value)}
+            value={form.meta_title}
+            onChange={(e) => setField('meta_title', e.target.value)}
             placeholder="Название — купить Бренд | K&E Beauty"
             className={inputCls}
           />
-          <p className="text-xs text-brand-charcoal-500 mt-1">{form.meta_title_ru.length}/70 символов</p>
+          <p className="text-xs text-brand-charcoal-500 mt-1">{form.meta_title.length}/70 символов</p>
         </Field>
         <Field label="Meta-описание">
           <textarea
-            value={form.meta_description_ru}
-            onChange={(e) => setField('meta_description_ru', e.target.value)}
+            value={form.meta_description}
+            onChange={(e) => setField('meta_description', e.target.value)}
             rows={2}
             placeholder="Краткое описание для поисковиков…"
             className={cn(inputCls, 'resize-none')}
           />
-          <p className="text-xs text-brand-charcoal-500 mt-1">{form.meta_description_ru.length}/160 символов</p>
+          <p className="text-xs text-brand-charcoal-500 mt-1">{form.meta_description.length}/160 символов</p>
         </Field>
       </FormSection>
 
@@ -670,8 +654,8 @@ export function AdminProductFormPage({ mode, productId }: Props) {
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 <Field label="Название" compact>
                   <input
-                    value={v.name_ru}
-                    onChange={(e) => setVariants((arr) => arr.map((x, j) => j === i ? { ...x, name_ru: e.target.value } : x))}
+                    value={v.name}
+                    onChange={(e) => setVariants((arr) => arr.map((x, j) => j === i ? { ...x, name: e.target.value } : x))}
                     placeholder="100 мл"
                     className={inputCls}
                   />

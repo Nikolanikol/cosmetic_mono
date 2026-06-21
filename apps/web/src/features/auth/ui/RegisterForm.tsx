@@ -67,7 +67,7 @@ export function RegisterForm() {
           Перейдите по ссылке в письме для подтверждения аккаунта.
         </p>
         <Link
-          href="/login"
+          href="/en/login"
           className="text-brand-pink-500 hover:text-brand-pink-400 text-sm"
         >
           ← Вернуться к входу
@@ -159,7 +159,7 @@ export function RegisterForm() {
 
       <p className="text-center text-brand-charcoal-300 text-sm mt-6">
         Уже есть аккаунт?{' '}
-        <Link href="/login" className="text-brand-pink-500 hover:text-brand-pink-400">
+        <Link href="/en/login" className="text-brand-pink-500 hover:text-brand-pink-400">
           Войти
         </Link>
       </p>

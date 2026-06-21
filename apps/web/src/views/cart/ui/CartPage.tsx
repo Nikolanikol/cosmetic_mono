@@ -18,7 +18,7 @@ export function CartPage() {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Back */}
         <Link
-          href="/catalog"
+          href="/en/catalog"
           className="inline-flex items-center gap-2 text-brand-charcoal-300 hover:text-white text-sm mb-6 transition-colors"
         >
           <ArrowLeft className="w-4 h-4" />
@@ -32,7 +32,7 @@ export function CartPage() {
             <ShoppingBag className="w-16 h-16 text-brand-black-600" />
             <h2 className="text-xl text-white">Корзина пуста</h2>
             <p className="text-brand-charcoal-300">Добавьте товары из каталога</p>
-            <Button href="/catalog" variant="outline">Перейти в каталог</Button>
+            <Button href="/en/catalog" variant="outline">Перейти в каталог</Button>
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -85,7 +85,7 @@ export function CartPage() {
                   </span>
                 </div>
 
-                <Button href="/checkout" fullWidth>
+                <Button href="/en/checkout" fullWidth>
                   Оформить заказ
                 </Button>
                 <p className="text-xs text-brand-charcoal-500 text-center">

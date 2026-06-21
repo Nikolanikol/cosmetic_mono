@@ -29,7 +29,7 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2" onClick={closeMenu}>
+          <Link href="/en" className="flex items-center gap-2" onClick={closeMenu}>
             <span className="text-xl font-bold text-gradient-pink">
               K&amp;E Beauty
             </span>
@@ -60,13 +60,13 @@ export function Header() {
             </button>
 
             <Link
-              href="/profile"
+              href="/en/profile"
               className="p-2 text-brand-charcoal-300 hover:text-white transition-colors hidden md:block"
             >
               <User className="w-5 h-5" />
             </Link>
 
-            <Link href="/cart" className="relative p-2 text-brand-charcoal-300 hover:text-white transition-colors">
+            <Link href="/en/cart" className="relative p-2 text-brand-charcoal-300 hover:text-white transition-colors">
               <ShoppingBag className="w-5 h-5" />
               {mounted && totalItems > 0 && (
                 <span className="absolute top-0.5 right-0.5 w-4 h-4 flex items-center justify-center bg-brand-pink-500 text-white text-[10px] font-bold rounded-full">
@@ -106,14 +106,14 @@ export function Header() {
               </Link>
             ))}
             <Link
-              href="/profile"
+              href="/en/profile"
               onClick={closeMenu}
               className="px-6 py-3 text-sm text-brand-charcoal-300 hover:text-white transition-colors"
             >
               Профиль
             </Link>
             <Link
-              href="/login"
+              href="/en/login"
               onClick={closeMenu}
               className="px-6 py-3 text-sm text-brand-charcoal-300 hover:text-white transition-colors"
             >

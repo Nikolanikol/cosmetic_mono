@@ -17,10 +17,9 @@ import type { SkinType } from '../types/user';
 const WISHLIST_PRODUCT_SELECT = `
   product:products!inner(
     id,
-    name_ru,
-    name_en,
+    name,
     slug,
-    description_ru,
+    description,
     category_id,
     brand_id,
     is_active,
@@ -28,13 +27,13 @@ const WISHLIST_PRODUCT_SELECT = `
     routine_step,
     skin_types,
     tags,
-    meta_title_ru,
-    meta_description_ru,
+    meta_title,
+    meta_description,
     created_at,
     brand:brands!inner(id, name, slug, origin_country),
-    category:categories!inner(id, name_ru, name_en, slug, parent_id, image_url, sort_order, created_at),
-    variants:product_variants(id, sku, name_ru, price_rub, sale_price_rub, stock, attributes),
-    images:product_images(id, url, alt_ru, is_primary, sort_order)
+    category:categories!inner(id, name, slug, parent_id, image_url, sort_order, created_at),
+    variants:product_variants(id, sku, name, price_rub, sale_price_rub, stock, attributes),
+    images:product_images(id, url, alt, is_primary, sort_order)
   )
 `;
 
@@ -60,10 +59,9 @@ export async function getWishlistProducts(
 
     return {
       id: item.id as string,
-      name_ru: item.name_ru as string,
-      name_en: item.name_en as string,
+      name: item.name as string,
       slug: item.slug as string,
-      description_ru: (item.description_ru as string | null) ?? null,
+      description: (item.description as string | null) ?? null,
       category_id: item.category_id as string,
       brand_id: item.brand_id as string,
       is_active: item.is_active as boolean,
@@ -71,8 +69,8 @@ export async function getWishlistProducts(
       routine_step: item.routine_step as number | null,
       skin_types: (item.skin_types as SkinType[]) || [],
       tags: (item.tags as ProductTag[]) || [],
-      meta_title_ru: (item.meta_title_ru as string | null) ?? null,
-      meta_description_ru: (item.meta_description_ru as string | null) ?? null,
+      meta_title: (item.meta_title as string | null) ?? null,
+      meta_description: (item.meta_description as string | null) ?? null,
       created_at: item.created_at as string,
       brand: item.brand as Brand,
       category: item.category as Category,

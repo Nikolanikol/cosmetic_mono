@@ -2,7 +2,6 @@
 
 import { User, ShoppingBag, Heart, Settings, LogOut } from 'lucide-react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/shared/lib/cn';
 import { useAuthStore } from '@/features/auth/model/useAuthStore';
@@ -32,7 +31,7 @@ export function ProfilePage() {
       setLoading(true);
       await signOut();
       setUser(null);
-      router.push('/login');
+      router.push('/en/login');
     } catch {
       setLoading(false);
     }
@@ -53,11 +52,9 @@ export function ProfilePage() {
                 {/* Avatar */}
                 <div className="w-16 h-16 rounded-full overflow-hidden bg-brand-black-600 flex items-center justify-center flex-shrink-0">
                   {avatarUrl ? (
-                    <Image
+                    <img
                       src={avatarUrl}
                       alt={displayName}
-                      width={64}
-                      height={64}
                       className="w-full h-full object-cover"
                       referrerPolicy="no-referrer"
                     />
@@ -114,7 +111,7 @@ export function ProfilePage() {
                 <ShoppingBag className="w-10 h-10 mx-auto mb-3 text-brand-black-600" />
                 <p>Заказов пока нет</p>
                 <Link
-                  href="/catalog"
+                  href="/en/catalog"
                   className="text-brand-pink-500 hover:text-brand-pink-400 text-sm mt-2 inline-block"
                 >
                   Перейти в каталог

@@ -1,7 +1,33 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
+import { defaultLocale, isValidLocale } from '@/shared/config/i18n';
 
 export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // Skip API, admin, static assets, auth callback
+  if (
+    pathname.startsWith('/api/') ||
+    pathname.startsWith('/admin') ||
+    pathname.startsWith('/auth/') ||
+    pathname.startsWith('/_next') ||
+    pathname.includes('.')
+  ) {
+    return NextResponse.next();
+  }
+
+  // Extract locale from first segment
+  const segments = pathname.split('/').filter(Boolean);
+  const maybeLocale = segments[0];
+
+  // Redirect root or unknown locale → /en/...
+  if (!maybeLocale || !isValidLocale(maybeLocale)) {
+    const url = request.nextUrl.clone();
+    url.pathname = `/${defaultLocale}${pathname === '/' ? '' : pathname}`;
+    return NextResponse.redirect(url, 308);
+  }
+
+  // --- Supabase auth session refresh ---
   let supabaseResponse = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -29,30 +55,18 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Protect admin routes
-  if (request.nextUrl.pathname.startsWith('/admin')) {
-    if (!user) {
-      return NextResponse.redirect(new URL('/login', request.url));
-    }
-
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single();
-
-    if (profile?.role !== 'admin') {
-      return NextResponse.redirect(new URL('/', request.url));
-    }
-  }
+  // Strip locale prefix for route matching
+  const pathWithoutLocale = '/' + segments.slice(1).join('/');
 
   // Protect profile and checkout routes
   if (
-    request.nextUrl.pathname.startsWith('/profile') ||
-    request.nextUrl.pathname.startsWith('/checkout')
+    pathWithoutLocale.startsWith('/profile') ||
+    pathWithoutLocale.startsWith('/checkout')
   ) {
     if (!user) {
-      return NextResponse.redirect(new URL('/login', request.url));
+      const url = request.nextUrl.clone();
+      url.pathname = `/${maybeLocale}/login`;
+      return NextResponse.redirect(url);
     }
   }
 
@@ -60,5 +74,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/profile/:path*', '/checkout/:path*'],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|.*\\..*).*)'],
 };

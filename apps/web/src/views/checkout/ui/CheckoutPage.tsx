@@ -82,7 +82,7 @@ export function CheckoutPage() {
       }
 
       clearCart();
-      router.push(`/profile/orders/${json.orderId}`);
+      router.push(`/en/profile/orders/${json.orderId}`);
     } catch {
       setSubmitError('Ошибка сети. Попробуйте ещё раз.');
     } finally {
@@ -98,7 +98,7 @@ export function CheckoutPage() {
         <h2 className="text-xl text-white">Корзина пуста</h2>
         <p className="text-brand-charcoal-400 text-sm">Добавьте товары перед оформлением заказа</p>
         <Link
-          href="/catalog"
+          href="/en/catalog"
           className="px-6 py-2 bg-brand-pink-500 hover:bg-brand-pink-400 text-white text-sm font-medium rounded-[2px] transition-colors"
         >
           Перейти в каталог

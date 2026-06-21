@@ -13,14 +13,13 @@ import type {
 interface VariantRow {
   id: string;
   sku: string;
-  name_ru: string;
+  name: string;
   price_rub: number;
   sale_price_rub: number | null;
   attributes: Record<string, string> | null;
   product: {
     id: string;
-    name_ru: string;
-    name_en: string;
+    name: string;
     slug: string;
     brand: { name: string } | { name: string }[];
     images: { url: string; is_primary: boolean }[];
@@ -74,9 +73,9 @@ export async function POST(request: Request) {
   const { data: rawVariants, error: variantsError } = await supabase
     .from('product_variants')
     .select(
-      `id, sku, name_ru, price_rub, sale_price_rub, attributes,
+      `id, sku, name, price_rub, sale_price_rub, attributes,
        product:products!inner(
-         id, name_ru, name_en, slug,
+         id, name, slug,
          brand:brands!inner(name),
          images:product_images(url, is_primary)
        )`
@@ -148,11 +147,10 @@ export async function POST(request: Request) {
 
       const snapshot: ProductSnapshot = {
         product_id:         product.id,
-        product_name_ru:    product.name_ru,
-        product_name_en:    product.name_en,
+        product_name:       product.name,
         product_slug:       product.slug,
         brand_name:         brandName,
-        variant_name_ru:    variant.name_ru,
+        variant_name:       variant.name,
         variant_sku:        variant.sku,
         variant_attributes: variant.attributes ?? {},
         image_url:          primaryImage?.url ?? null,

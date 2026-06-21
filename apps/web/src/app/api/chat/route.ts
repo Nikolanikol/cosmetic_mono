@@ -78,7 +78,7 @@ export async function POST(request: Request) {
         .map((p, i) => {
           const price = p.default_variant?.price_rub;
           const priceStr = price ? `${price} руб.` : '';
-          return `${i + 1}. ${p.name_ru} (${p.brand.name})${priceStr ? ` — ${priceStr}` : ''} → /product/${p.slug}`;
+          return `${i + 1}. ${p.name} (${p.brand.name})${priceStr ? ` — ${priceStr}` : ''} → /product/${p.slug}`;
         })
         .join('\n');
 

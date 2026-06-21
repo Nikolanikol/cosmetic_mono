@@ -226,7 +226,7 @@ export function SettingsPage() {
     return (
       <div className="min-h-screen bg-brand-black-900 flex items-center justify-center">
         <p className="text-brand-charcoal-400">
-          <Link href="/login" className="text-brand-pink-500 hover:underline">Войдите</Link>
+          <Link href="/en/login" className="text-brand-pink-500 hover:underline">Войдите</Link>
           , чтобы открыть настройки
         </p>
       </div>
@@ -249,7 +249,7 @@ export function SettingsPage() {
 
         {/* Header */}
         <div className="flex items-center gap-3">
-          <Link href="/profile" className="text-brand-charcoal-400 hover:text-white transition-colors">
+          <Link href="/en/profile" className="text-brand-charcoal-400 hover:text-white transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <Settings className="w-6 h-6 text-brand-pink-500" />

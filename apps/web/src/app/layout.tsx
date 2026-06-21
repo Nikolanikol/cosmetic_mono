@@ -7,12 +7,12 @@ const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 export const metadata: Metadata = {
   metadataBase: new URL(APP_URL),
   title: {
-    default: 'K&E Beauty — Корейская и европейская косметика',
+    default: 'K&E Beauty — Korean & European Skincare',
     template: '%s | K&E Beauty',
   },
   description:
-    'Оригинальная корейская и европейская косметика с доставкой по всему миру. Уходовая косметика, санскрины, сыворотки, тонеры лучших брендов.',
-  keywords: ['корейская косметика', 'k-beauty', 'купить корейскую косметику', 'уход за кожей', 'косметика онлайн'],
+    'Authentic Korean and European cosmetics with worldwide delivery. Premium skincare, sunscreens, serums, toners from top K-beauty brands.',
+  keywords: ['korean skincare', 'k-beauty', 'buy korean cosmetics', 'skincare', 'cosmetics online'],
   authors: [{ name: 'K&E Beauty' }],
   creator: 'K&E Beauty',
   robots: {
@@ -22,17 +22,23 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: 'website',
-    locale: 'ru_RU',
+    locale: 'en_US',
     url: APP_URL,
     siteName: 'K&E Beauty',
-    title: 'K&E Beauty — Корейская и европейская косметика',
+    title: 'K&E Beauty — Korean & European Skincare',
     description:
-      'Оригинальная корейская и европейская косметика с доставкой по всему миру.',
+      'Authentic Korean and European cosmetics with worldwide delivery.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'K&E Beauty — Корейская и европейская косметика',
-    description: 'Оригинальная корейская и европейская косметика с доставкой по всему миру.',
+    title: 'K&E Beauty — Korean & European Skincare',
+    description: 'Authentic Korean and European cosmetics with worldwide delivery.',
+  },
+  alternates: {
+    canonical: APP_URL,
+    languages: {
+      en: `${APP_URL}/en`,
+    },
   },
 };
 
@@ -42,7 +48,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ru">
+    <html lang="en">
       <body className="bg-brand-black-900 text-white min-h-screen flex flex-col">
         <Providers>{children}</Providers>
       </body>

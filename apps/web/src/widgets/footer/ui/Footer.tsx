@@ -2,16 +2,16 @@ import Link from 'next/link';
 
 const LINKS = {
   catalog: [
-    { href: '/catalog', label: 'Весь каталог' },
-    { href: '/catalog?origin_country=KR', label: 'K-Beauty' },
-    { href: '/catalog?origin_country=FR', label: 'Европейская косметика' },
-    { href: '/catalog?sale_only=true', label: 'Скидки' },
+    { href: '/en/catalog', label: 'Весь каталог' },
+    { href: '/en/catalog?origin_country=KR', label: 'K-Beauty' },
+    { href: '/en/catalog?origin_country=FR', label: 'Европейская косметика' },
+    { href: '/en/catalog?sale_only=true', label: 'Скидки' },
   ],
   info: [
-    { href: '/quiz', label: 'Определить тип кожи' },
-    { href: '/login', label: 'Вход' },
-    { href: '/register', label: 'Регистрация' },
-    { href: '/cart', label: 'Корзина' },
+    { href: '/en/quiz', label: 'Определить тип кожи' },
+    { href: '/en/login', label: 'Вход' },
+    { href: '/en/register', label: 'Регистрация' },
+    { href: '/en/cart', label: 'Корзина' },
   ],
 };
 

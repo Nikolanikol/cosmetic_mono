@@ -29,8 +29,7 @@ export async function getUserCart(
         *,
         product:products!inner(
           id,
-          name_ru,
-          name_en,
+          name,
           slug,
           brand:brands(name, slug),
           images:product_images(url, is_primary)
@@ -63,8 +62,7 @@ export async function getGuestCart(
         *,
         product:products!inner(
           id,
-          name_ru,
-          name_en,
+          name,
           slug,
           brand:brands(name, slug),
           images:product_images(url, is_primary)

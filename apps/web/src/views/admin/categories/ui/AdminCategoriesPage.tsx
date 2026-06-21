@@ -16,8 +16,7 @@ import type { Category, CategoryInsert } from '@packages/types';
 // ── Form state ────────────────────────────────────────────────────────────────
 
 interface CatForm {
-  name_ru: string;
-  name_en: string;
+  name: string;
   slug: string;
   parent_id: string;
   sort_order: string;
@@ -25,8 +24,7 @@ interface CatForm {
 }
 
 const EMPTY_FORM: CatForm = {
-  name_ru: '',
-  name_en: '',
+  name: '',
   slug: '',
   parent_id: '',
   sort_order: '0',
@@ -78,26 +76,15 @@ function CatFormPanel({
   return (
     <div className="bg-brand-black-800 border border-brand-pink-500/40 rounded-xl p-5 space-y-4">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        {/* Name RU */}
+        {/* Name */}
         <div className="space-y-1">
-          <label className="text-xs text-brand-charcoal-400">Название (рус) *</label>
+          <label className="text-xs text-brand-charcoal-400">Название *</label>
           <input
-            value={form.name_ru}
+            value={form.name}
             onChange={(e) => {
-              set('name_ru', e.target.value);
+              set('name', e.target.value);
               if (!initial.slug) set('slug', slugify(e.target.value));
             }}
-            placeholder="Сыворотки"
-            className={inputCls}
-          />
-        </div>
-
-        {/* Name EN */}
-        <div className="space-y-1">
-          <label className="text-xs text-brand-charcoal-400">Название (eng)</label>
-          <input
-            value={form.name_en}
-            onChange={(e) => set('name_en', e.target.value)}
             placeholder="Serums"
             className={inputCls}
           />
@@ -115,8 +102,8 @@ function CatFormPanel({
             />
             <button
               type="button"
-              onClick={() => set('slug', slugify(form.name_ru))}
-              disabled={!form.name_ru}
+              onClick={() => set('slug', slugify(form.name))}
+              disabled={!form.name}
               title="Авто-slug"
               className="px-3 py-2 bg-brand-black-700 border border-brand-black-600 rounded-lg text-xs text-brand-charcoal-300 hover:text-white disabled:opacity-40 transition-colors"
             >
@@ -135,7 +122,7 @@ function CatFormPanel({
           >
             <option value="">— корневая —</option>
             {roots.map((c) => (
-              <option key={c.id} value={c.id}>{c.name_ru}</option>
+              <option key={c.id} value={c.id}>{c.name}</option>
             ))}
           </select>
         </div>
@@ -170,10 +157,10 @@ function CatFormPanel({
         <button
           type="button"
           onClick={() => onSave(form)}
-          disabled={!form.name_ru || !form.slug || isPending}
+          disabled={!form.name || !form.slug || isPending}
           className={cn(
             'flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors',
-            form.name_ru && form.slug && !isPending
+            form.name && form.slug && !isPending
               ? 'bg-brand-pink-500 hover:bg-brand-pink-400 text-white'
               : 'bg-brand-black-700 text-brand-charcoal-500 cursor-not-allowed'
           )}
@@ -216,8 +203,7 @@ export function AdminCategoriesPage() {
   const createMutation = useMutation({
     mutationFn: (form: CatForm) =>
       createCategory(supabaseBrowser, {
-        name_ru: form.name_ru,
-        name_en: form.name_en || form.name_ru,
+        name: form.name,
         slug: form.slug,
         parent_id: form.parent_id || null,
         sort_order: parseInt(form.sort_order) || 0,
@@ -232,8 +218,7 @@ export function AdminCategoriesPage() {
       const { error } = await supabaseBrowser
         .from('categories')
         .update({
-          name_ru: form.name_ru,
-          name_en: form.name_en || form.name_ru,
+          name: form.name,
           slug: form.slug,
           parent_id: form.parent_id || null,
           sort_order: parseInt(form.sort_order) || 0,
@@ -342,11 +327,8 @@ export function AdminCategoriesPage() {
                             'text-xs font-medium',
                             isChild ? 'text-brand-charcoal-300' : 'text-white'
                           )}>
-                            {cat.name_ru}
+                            {cat.name}
                           </span>
-                          {cat.name_en && cat.name_en !== cat.name_ru && (
-                            <span className="text-brand-charcoal-600 text-xs">/ {cat.name_en}</span>
-                          )}
                         </div>
                       </td>
                       <td className="px-5 py-3.5 hidden sm:table-cell">
@@ -399,8 +381,7 @@ export function AdminCategoriesPage() {
                         <td colSpan={4} className="px-5 py-3">
                           <CatFormPanel
                             initial={{
-                              name_ru: cat.name_ru,
-                              name_en: cat.name_en,
+                              name: cat.name,
                               slug: cat.slug,
                               parent_id: cat.parent_id ?? '',
                               sort_order: cat.sort_order.toString(),

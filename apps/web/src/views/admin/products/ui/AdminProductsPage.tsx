@@ -19,13 +19,13 @@ import { deleteProduct } from '@packages/api/products';
 
 interface AdminProduct {
   id: string;
-  name_ru: string;
+  name: string;
   slug: string;
   is_active: boolean;
   is_featured: boolean;
   created_at: string;
   brand: { name: string } | null;
-  category: { name_ru: string } | null;
+  category: { name: string } | null;
   variants: { price_rub: number; stock: number }[];
 }
 
@@ -49,14 +49,14 @@ export function AdminProductsPage() {
       let q = supabaseBrowser
         .from('products')
         .select(
-          `id, name_ru, slug, is_active, is_featured, created_at,
+          `id, name, slug, is_active, is_featured, created_at,
            brand:brands!inner(name),
-           category:categories!inner(name_ru),
+           category:categories!inner(name),
            variants:product_variants(price_rub, stock)`,
           { count: 'exact' }
         );
 
-      if (search)                      q = q.or(`name_ru.ilike.%${search}%,name_en.ilike.%${search}%`);
+      if (search)                      q = q.or(`name.ilike.%${search}%`);
       if (activeFilter === 'active')   q = q.eq('is_active', true);
       if (activeFilter === 'inactive') q = q.eq('is_active', false);
 
@@ -163,12 +163,12 @@ export function AdminProductsPage() {
                       className="border-b border-brand-black-600/50 hover:bg-brand-black-700/40 transition-colors"
                     >
                       <td className="px-5 py-3.5">
-                        <p className="text-white text-xs font-medium line-clamp-1">{p.name_ru}</p>
+                        <p className="text-white text-xs font-medium line-clamp-1">{p.name}</p>
                         <p className="text-brand-charcoal-500 text-xs mt-0.5 font-mono">{p.slug}</p>
                       </td>
                       <td className="px-5 py-3.5 hidden md:table-cell">
                         <p className="text-brand-charcoal-300 text-xs">{(p.brand as any)?.name ?? '—'}</p>
-                        <p className="text-brand-charcoal-500 text-xs mt-0.5">{(p.category as any)?.name_ru ?? '—'}</p>
+                        <p className="text-brand-charcoal-500 text-xs mt-0.5">{(p.category as any)?.name ?? '—'}</p>
                       </td>
                       <td className="px-5 py-3.5 text-white text-xs">
                         {price != null ? formatPrice(price) : '—'}

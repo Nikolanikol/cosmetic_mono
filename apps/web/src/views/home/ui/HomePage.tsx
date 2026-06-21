@@ -66,11 +66,11 @@ function HeroSection() {
 
           {/* CTAs */}
           <div className="flex flex-wrap gap-4">
-            <Button href="/catalog" size="lg">
+            <Button href="/en/catalog" size="lg">
               Перейти в каталог
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
-            <Button href="/quiz" variant="outline" size="lg">
+            <Button href="/en/quiz" variant="outline" size="lg">
               <FlaskConical className="w-4 h-4 mr-2" />
               Определить тип кожи
             </Button>
@@ -116,7 +116,7 @@ function CategoriesSection() {
       <SectionHeader
         title="Категории"
         subtitle="Найдите нужный уход"
-        href="/catalog"
+        href="/en/catalog"
         linkLabel="Весь каталог"
       />
 
@@ -151,7 +151,7 @@ function CategoryCard({ category }: { category: Category }) {
     >
       <span className="text-2xl">{getCategoryEmoji(category.slug)}</span>
       <span className="text-xs text-brand-charcoal-300 group-hover:text-white transition-colors leading-tight">
-        {category.name_ru}
+        {category.name}
       </span>
     </Link>
   );
@@ -245,7 +245,7 @@ function FeaturedProductsSection() {
         <SectionHeader
           title="Хиты продаж"
           subtitle="Самые популярные товары"
-          href="/catalog?sort=popular"
+          href="/en/catalog?sort=popular"
           linkLabel="Смотреть все"
         />
 
@@ -290,7 +290,7 @@ function QuizCTASection() {
               </p>
             </div>
           </div>
-          <Button href="/quiz" size="lg" className="flex-shrink-0">
+          <Button href="/en/quiz" size="lg" className="flex-shrink-0">
             Пройти тест
             <ArrowRight className="w-4 h-4 ml-2" />
           </Button>

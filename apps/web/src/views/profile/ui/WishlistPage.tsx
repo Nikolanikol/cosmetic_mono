@@ -35,7 +35,7 @@ export function WishlistPage() {
         {/* Header */}
         <div className="flex items-center gap-3 mb-8">
           <Link
-            href="/profile"
+            href="/en/profile"
             className="text-brand-charcoal-400 hover:text-white transition-colors"
           >
             <ArrowLeft className="w-5 h-5" />
@@ -60,7 +60,7 @@ export function WishlistPage() {
               Сохраняйте понравившиеся товары и возвращайтесь к ним позже
             </p>
             <Link
-              href="/login"
+              href="/en/login"
               className="inline-block px-6 py-2 bg-brand-pink-500 text-white text-sm font-medium rounded-[2px] hover:bg-brand-pink-400 transition-colors"
             >
               Войти
@@ -86,7 +86,7 @@ export function WishlistPage() {
               Нажмите ♡ на карточке товара, чтобы добавить его сюда
             </p>
             <Link
-              href="/catalog"
+              href="/en/catalog"
               className="inline-flex items-center gap-2 px-6 py-2 bg-brand-pink-500 text-white text-sm font-medium rounded-[2px] hover:bg-brand-pink-400 transition-colors"
             >
               <ShoppingBag className="w-4 h-4" />

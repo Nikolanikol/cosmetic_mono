@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronLeft, Tag, Check, Loader2, X } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
@@ -113,7 +112,7 @@ export function PaymentStep({ items, addressData, onBack, onSubmit, isSubmitting
           <div key={item.variantId} className="flex items-center gap-3">
             <div className="w-12 h-14 bg-brand-black-800 rounded-[2px] overflow-hidden flex-shrink-0 relative">
               {item.imageUrl ? (
-                <Image src={item.imageUrl} alt={item.name} fill className="object-cover" />
+                <img src={item.imageUrl} alt={item.name} className="absolute inset-0 w-full h-full object-cover" />
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-brand-charcoal-600 text-[10px]">
                   Нет фото

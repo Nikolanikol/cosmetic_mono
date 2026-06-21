@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import { ArrowLeft, Package, MapPin, CreditCard, Loader2 } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
 import { formatPrice } from '@/shared/lib/formatPrice';
@@ -73,7 +72,7 @@ export function OrderDetailPage({ orderId }: OrderDetailPageProps) {
       <div className="min-h-screen bg-brand-black-900 flex flex-col items-center justify-center gap-4">
         <Package className="w-12 h-12 text-brand-black-600" />
         <p className="text-white">Заказ не найден</p>
-        <Link href="/profile/orders" className="text-brand-pink-500 hover:underline text-sm">
+        <Link href="/en/profile/orders" className="text-brand-pink-500 hover:underline text-sm">
           Все заказы
         </Link>
       </div>
@@ -98,7 +97,7 @@ export function OrderDetailPage({ orderId }: OrderDetailPageProps) {
 
         {/* Header */}
         <div className="flex items-center gap-3">
-          <Link href="/profile/orders" className="text-brand-charcoal-400 hover:text-white transition-colors">
+          <Link href="/en/profile/orders" className="text-brand-charcoal-400 hover:text-white transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
@@ -122,7 +121,7 @@ export function OrderDetailPage({ orderId }: OrderDetailPageProps) {
                 <div key={item.id} className="flex items-center gap-3">
                   <div className="w-14 h-16 bg-brand-black-800 rounded-[2px] overflow-hidden flex-shrink-0 relative">
                     {snap.image_url ? (
-                      <Image src={snap.image_url} alt={snap.product_name_ru} fill className="object-cover" />
+                      <img src={snap.image_url} alt={snap.product_name} className="absolute inset-0 w-full h-full object-cover" />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-brand-charcoal-600 text-[10px]">
                         Нет фото
@@ -134,10 +133,10 @@ export function OrderDetailPage({ orderId }: OrderDetailPageProps) {
                       href={`/product/${snap.product_slug}`}
                       className="text-sm text-white hover:text-brand-pink-400 line-clamp-2 transition-colors"
                     >
-                      {snap.product_name_ru}
+                      {snap.product_name}
                     </Link>
                     <p className="text-xs text-brand-charcoal-500 mt-0.5">
-                      {snap.brand_name} · {snap.variant_name_ru}
+                      {snap.brand_name} · {snap.variant_name}
                     </p>
                     <p className="text-xs text-brand-charcoal-400">Кол-во: {item.quantity} шт.</p>
                   </div>
@@ -223,7 +222,7 @@ export function OrderDetailPage({ orderId }: OrderDetailPageProps) {
         {/* Back to catalog */}
         <div className="text-center pt-2">
           <Link
-            href="/catalog"
+            href="/en/catalog"
             className="text-sm text-brand-charcoal-400 hover:text-brand-pink-500 transition-colors"
           >
             Продолжить покупки →

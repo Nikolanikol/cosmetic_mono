@@ -3,8 +3,7 @@
  * Used by both Next.js web app and future React Native app
  */
 
-import type { ProductVariant } from './product';
-import type { ProductWithRelations } from './product';
+import type { ProductVariant, ProductWithDetails } from './product';
 
 export interface CartItem {
   id: string;
@@ -32,16 +31,15 @@ export interface CartItemUpdate {
 
 export interface CartItemWithVariant extends CartItem {
   variant: ProductVariant & {
-    product: Pick<ProductWithRelations, 'id' | 'name_ru' | 'name_en' | 'slug' | 'brand' | 'images'>;
+    product: Pick<ProductWithDetails, 'id' | 'name' | 'slug' | 'brand' | 'images'>;
   };
 }
 
 export interface CartItemWithDetails extends CartItem {
   variant: ProductVariant;
   product: {
-    id: string;
-    name_ru: string;
-    name_en: string;
+    id: number;
+    name: string;
     slug: string;
     brand: {
       name: string;

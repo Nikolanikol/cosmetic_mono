@@ -12,7 +12,7 @@ export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get('code');
   // Where to redirect after successful auth (default: home)
-  const next = searchParams.get('next') ?? '/';
+  const next = searchParams.get('next') ?? '/en';
 
   if (code) {
     const cookieStore = await cookies();
@@ -43,5 +43,5 @@ export async function GET(request: Request) {
   }
 
   // Something went wrong — redirect to login with error flag
-  return NextResponse.redirect(`${origin}/login?error=auth_failed`);
+  return NextResponse.redirect(`${origin}/en/login?error=auth_failed`);
 }

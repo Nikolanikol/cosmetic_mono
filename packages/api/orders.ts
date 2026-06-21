@@ -405,15 +405,15 @@ export async function getTopProducts(
     { product_name: string; total_sold: number; revenue: number }
   >();
 
-  (data || []).forEach((item: { product_snapshot: { product_id: string; product_name_ru: string }; quantity: number; price_rub_at_purchase: number }) => {
+  (data || []).forEach((item: { product_snapshot: { product_id: string; product_name: string }; quantity: number; price_rub_at_purchase: number }) => {
     const snapshot = item.product_snapshot;
     const current = productMap.get(snapshot.product_id) || {
-      product_name: snapshot.product_name_ru,
+      product_name: snapshot.product_name,
       total_sold: 0,
       revenue: 0,
     };
     productMap.set(snapshot.product_id, {
-      product_name: snapshot.product_name_ru,
+      product_name: snapshot.product_name,
       total_sold: current.total_sold + item.quantity,
       revenue: current.revenue + item.quantity * item.price_rub_at_purchase,
     });

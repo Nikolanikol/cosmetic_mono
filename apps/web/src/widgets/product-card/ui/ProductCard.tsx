@@ -1,18 +1,10 @@
-/**
- * Product Card Component
- * Default: full-bleed image with bottom gradient overlay
- * Compact: horizontal layout for list view
- */
-
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { ShoppingBag } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
 import { PriceDisplay } from '@/entities/product/ui/PriceDisplay';
 import { ROUTES } from '@/shared/config/routes';
-import { COUNTRY_FLAGS } from '@packages/types';
 import type { ProductWithDefaultVariant } from '@packages/types';
 import { WishlistButton } from '@/features/wishlist';
 import { useCartStore } from '@/features/cart/model/useCartStore';
@@ -36,12 +28,13 @@ export function ProductCard({
     e.stopPropagation();
     if (!default_variant) return;
     addItem({
-      id:        default_variant.id,
-      productId: product.id,
-      variantId: default_variant.id,
-      name:      product.name_ru,
-      price:     default_variant.price_rub,
-      salePrice: default_variant.sale_price_rub ?? null,
+      id:        String(default_variant.id),
+      productId: String(product.id),
+      variantId: String(default_variant.id),
+      name:      product.name,
+      price:     default_variant.price,
+      salePrice: default_variant.compare_at_price && default_variant.compare_at_price > default_variant.price
+        ? default_variant.price : null,
       quantity:  1,
       imageUrl:  primary_image?.url,
       slug:      product.slug,
@@ -49,8 +42,8 @@ export function ProductCard({
   };
 
   const hasDiscount =
-    !!default_variant?.sale_price_rub &&
-    default_variant.sale_price_rub < default_variant.price_rub;
+    !!default_variant?.compare_at_price &&
+    default_variant.compare_at_price > default_variant.price;
 
   if (variant === 'compact') {
     return (
@@ -66,7 +59,6 @@ export function ProductCard({
     );
   }
 
-  // ── Default: full-bleed overlay card ─────────────────────────────────────
   return (
     <article
       className={cn(
@@ -79,15 +71,11 @@ export function ProductCard({
       )}
     >
       <Link href={ROUTES.PRODUCT(product.slug)} className="block relative aspect-[3/4]">
-
-        {/* Image */}
         {primary_image ? (
-          <Image
+          <img
             src={primary_image.url}
-            alt={primary_image.alt_ru || product.name_ru}
-            fill
-            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            alt={primary_image.alt || product.name}
+            className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
           <div className="absolute inset-0 bg-brand-black-700 flex items-center justify-center">
@@ -95,27 +83,18 @@ export function ProductCard({
           </div>
         )}
 
-        {/* Permanent bottom gradient */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
 
-        {/* Top badges — only the most important, max 2 */}
         <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
           {hasDiscount && (
             <Badge variant="sale">
-              −{Math.round((1 - default_variant!.sale_price_rub! / default_variant!.price_rub) * 100)}%
+              −{Math.round((1 - default_variant!.price / default_variant!.compare_at_price!) * 100)}%
             </Badge>
-          )}
-          {product.is_featured && !hasDiscount && (
-            <Badge variant="hit">Хит</Badge>
-          )}
-          {isNew(product.created_at) && !hasDiscount && !product.is_featured && (
-            <Badge variant="new">Новинка</Badge>
           )}
         </div>
 
-        {/* Wishlist — top right */}
         <WishlistButton
-          productId={product.id}
+          productId={String(product.id)}
           className={cn(
             'absolute top-3 right-3',
             'w-9 h-9 flex items-center justify-center rounded-full',
@@ -124,29 +103,21 @@ export function ProductCard({
           )}
         />
 
-        {/* Bottom overlay content */}
         <div className="absolute bottom-0 left-0 right-0 p-3">
-          {/* Brand */}
           <p className="text-white/60 text-xs font-medium mb-1 tracking-wide truncate">
-            {COUNTRY_FLAGS[brand.origin_country] && (
-              <span className="mr-1">{COUNTRY_FLAGS[brand.origin_country]}</span>
-            )}
             {brand.name}
           </p>
 
-          {/* Product name */}
           <h3 className="text-white font-semibold text-sm leading-snug line-clamp-2 mb-2">
-            {product.name_ru}
+            {product.name}
           </h3>
 
-          {/* Price */}
           <PriceDisplay
-            price={default_variant?.price_rub || 0}
-            salePrice={default_variant?.sale_price_rub}
+            price={hasDiscount ? default_variant!.compare_at_price! : (default_variant?.price || 0)}
+            salePrice={hasDiscount ? default_variant!.price : undefined}
             size="sm"
           />
 
-          {/* Add to cart — full width */}
           {default_variant && (
             <button
               onClick={handleAddToCart}
@@ -167,8 +138,6 @@ export function ProductCard({
     </article>
   );
 }
-
-// ── Compact / List variant ────────────────────────────────────────────────────
 
 function CompactCard({
   product,
@@ -196,18 +165,15 @@ function CompactCard({
         className
       )}
     >
-      {/* Square image */}
       <Link
         href={ROUTES.PRODUCT(product.slug)}
         className="relative flex-shrink-0 w-24 h-24 rounded-xl overflow-hidden"
       >
         {primary_image ? (
-          <Image
+          <img
             src={primary_image.url}
-            alt={primary_image.alt_ru || product.name_ru}
-            fill
-            sizes="96px"
-            className="object-cover group-hover:scale-105 transition-transform duration-300"
+            alt={primary_image.alt || product.name}
+            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
         ) : (
           <div className="w-full h-full bg-brand-black-700 flex items-center justify-center">
@@ -216,43 +182,31 @@ function CompactCard({
         )}
       </Link>
 
-      {/* Info */}
       <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
         <div>
-          {/* Brand */}
-          <p className="text-brand-charcoal-400 text-xs mb-1">
-            {COUNTRY_FLAGS[brand.origin_country] && (
-              <span className="mr-1">{COUNTRY_FLAGS[brand.origin_country]}</span>
-            )}
-            {brand.name}
-          </p>
-
-          {/* Name */}
+          <p className="text-brand-charcoal-400 text-xs mb-1">{brand.name}</p>
           <Link href={ROUTES.PRODUCT(product.slug)}>
             <h3 className="text-white text-sm font-semibold leading-snug line-clamp-2 hover:text-brand-pink-400 transition-colors">
-              {product.name_ru}
+              {product.name}
             </h3>
           </Link>
-
-          {/* Variant */}
-          {default_variant?.name_ru && (
+          {default_variant?.name && (
             <p className="text-brand-charcoal-500 text-xs mt-0.5">
-              {default_variant.name_ru}
+              {default_variant.name}
             </p>
           )}
         </div>
 
-        {/* Price + actions */}
         <div className="flex items-center justify-between gap-2 mt-2">
           <PriceDisplay
-            price={default_variant?.price_rub || 0}
-            salePrice={default_variant?.sale_price_rub}
+            price={hasDiscount ? default_variant!.compare_at_price! : (default_variant?.price || 0)}
+            salePrice={hasDiscount ? default_variant!.price : undefined}
             size="sm"
           />
 
           <div className="flex items-center gap-2">
             <WishlistButton
-              productId={product.id}
+              productId={String(product.id)}
               className="w-8 h-8 flex items-center justify-center rounded-full bg-brand-black-700 hover:bg-brand-pink-500 transition-colors"
             />
             {default_variant && (
@@ -269,12 +223,6 @@ function CompactCard({
       </div>
     </article>
   );
-}
-
-// ── Helpers ───────────────────────────────────────────────────────────────────
-
-function isNew(createdAt: string) {
-  return new Date(createdAt) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 }
 
 function Badge({
@@ -297,8 +245,6 @@ function Badge({
     </span>
   );
 }
-
-// ── Skeleton ──────────────────────────────────────────────────────────────────
 
 export function ProductCardSkeleton({
   className,
@@ -326,21 +272,17 @@ export function ProductCardSkeleton({
   );
 }
 
-// ── Grid ──────────────────────────────────────────────────────────────────────
-
-interface ProductCardGridProps {
-  products: ProductWithDefaultVariant[];
-  className?: string;
-  columns?: 2 | 3 | 4 | 5;
-  gap?: 'sm' | 'md' | 'lg';
-}
-
 export function ProductCardGrid({
   products,
   className,
   columns = 4,
   gap = 'md',
-}: ProductCardGridProps) {
+}: {
+  products: ProductWithDefaultVariant[];
+  className?: string;
+  columns?: 2 | 3 | 4 | 5;
+  gap?: 'sm' | 'md' | 'lg';
+}) {
   const gridCols = {
     2: 'grid-cols-2',
     3: 'grid-cols-2 sm:grid-cols-3',

@@ -3,26 +3,28 @@
  * Centralized route definitions for type safety
  */
 
+import { localePath } from '@/shared/lib/localePath';
+
 export const ROUTES = {
   // Public routes
-  HOME: '/',
-  CATALOG: '/catalog',
-  PRODUCT: (slug: string) => `/product/${slug}`,
-  CART: '/cart',
-  CHECKOUT: '/checkout',
-  QUIZ: '/quiz',
+  HOME: localePath('/'),
+  CATALOG: localePath('/catalog'),
+  PRODUCT: (slug: string) => localePath(`/product/${slug}`),
+  CART: localePath('/cart'),
+  CHECKOUT: localePath('/checkout'),
+  QUIZ: localePath('/quiz'),
 
   // Auth routes
-  LOGIN: '/login',
-  REGISTER: '/register',
-  FORGOT_PASSWORD: '/forgot-password',
-  RESET_PASSWORD: '/reset-password',
+  LOGIN: localePath('/login'),
+  REGISTER: localePath('/register'),
+  FORGOT_PASSWORD: localePath('/forgot-password'),
+  RESET_PASSWORD: localePath('/reset-password'),
 
   // User routes
-  PROFILE: '/profile',
-  ORDERS: '/profile/orders',
-  WISHLIST: '/profile/wishlist',
-  SETTINGS: '/profile/settings',
+  PROFILE: localePath('/profile'),
+  ORDERS: localePath('/profile/orders'),
+  WISHLIST: localePath('/profile/wishlist'),
+  SETTINGS: localePath('/profile/settings'),
 
   // Admin routes
   ADMIN: {

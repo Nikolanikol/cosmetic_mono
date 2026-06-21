@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { Minus, Plus, Trash2 } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
@@ -37,7 +36,7 @@ export function CartItem({
       <Link href={`/product/${slug}`} className="flex-shrink-0">
         <div className="w-20 h-24 bg-brand-black-700 rounded-[2px] overflow-hidden relative">
           {imageUrl ? (
-            <Image src={imageUrl} alt={name} fill className="object-cover" />
+            <img src={imageUrl} alt={name} className="absolute inset-0 w-full h-full object-cover" />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-brand-charcoal-600 text-xs">
               Нет фото

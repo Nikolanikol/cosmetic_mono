@@ -40,7 +40,7 @@ export function OrdersPage() {
 
         {/* Header */}
         <div className="flex items-center gap-3 mb-8">
-          <Link href="/profile" className="text-brand-charcoal-400 hover:text-white transition-colors">
+          <Link href="/en/profile" className="text-brand-charcoal-400 hover:text-white transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <ShoppingBag className="w-6 h-6 text-brand-pink-500" />
@@ -61,7 +61,7 @@ export function OrdersPage() {
               Оформите первый заказ в нашем каталоге
             </p>
             <Link
-              href="/catalog"
+              href="/en/catalog"
               className="inline-block px-6 py-2 bg-brand-pink-500 hover:bg-brand-pink-400 text-white text-sm font-medium rounded-[2px] transition-colors"
             >
               Перейти в каталог
