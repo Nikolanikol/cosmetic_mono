@@ -1,3 +1,4 @@
+import { cache } from 'react';
 import type { Metadata } from 'next';
 import { ProductDetailPage } from '@/views/product-detail/ui/ProductDetailPage';
 import { getSupabaseServiceClient } from '@/shared/api/supabaseServer';
@@ -7,12 +8,16 @@ interface ProductPageProps {
   params: Promise<{ locale: string; slug: string }>;
 }
 
+const getCachedProduct = cache((slug: string) => {
+  const supabase = getSupabaseServiceClient();
+  return getProductBySlug(supabase, slug);
+});
+
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
   const { locale, slug } = await params;
 
   try {
-    const supabase = getSupabaseServiceClient();
-    const product = await getProductBySlug(supabase, slug);
+    const product = await getCachedProduct(slug);
 
     if (!product) {
       return { title: 'Product not found' };
@@ -21,7 +26,9 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
     const primaryImage =
       product.images.find((img) => img.is_primary) ?? product.images[0] ?? null;
 
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://axis-beauty.com';
     const title = `${product.name} ${product.brand.name} — Buy | K&E Beauty`;
+    const productUrl = `${baseUrl}/${locale}/product/${slug}`;
 
     const plainDescription = product.description
       ? product.description.replace(/<[^>]*>/g, '').slice(0, 157) + '...'
@@ -34,7 +41,7 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
         title,
         description: plainDescription,
         type: 'website',
-        url: `/${locale}/product/${slug}`,
+        url: productUrl,
         images: primaryImage
           ? [{ url: primaryImage.url, alt: primaryImage.alt ?? product.name }]
           : [],
@@ -46,8 +53,8 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
         images: primaryImage ? [primaryImage.url] : [],
       },
       alternates: {
-        canonical: `/${locale}/product/${slug}`,
-        languages: { [locale]: `/${locale}/product/${slug}` },
+        canonical: productUrl,
+        languages: { [locale]: productUrl },
       },
     };
   } catch {
@@ -57,63 +64,95 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
 
 export default async function ProductPage({ params }: ProductPageProps) {
   const { locale, slug } = await params;
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://axis-beauty.com';
 
-  let jsonLd: object | null = null;
-
+  let product = null;
   try {
-    const supabase = getSupabaseServiceClient();
-    const product = await getProductBySlug(supabase, slug);
-
-    if (product) {
-      const defaultVariant = product.variants[0] ?? null;
-      const primaryImage =
-        product.images.find((img) => img.is_primary) ?? product.images[0] ?? null;
-
-      jsonLd = {
-        '@context': 'https://schema.org',
-        '@type': 'Product',
-        name: product.name,
-        ...(product.description
-          ? { description: product.description.replace(/<[^>]*>/g, '').slice(0, 300) }
-          : {}),
-        ...(primaryImage ? { image: [primaryImage.url] } : {}),
-        brand: {
-          '@type': 'Brand',
-          name: product.brand.name,
-        },
-        category: product.category.name,
-        ...(defaultVariant
-          ? {
-              offers: {
-                '@type': 'Offer',
-                priceCurrency: 'USD',
-                price: defaultVariant.price,
-                availability: defaultVariant.in_stock
-                  ? 'https://schema.org/InStock'
-                  : 'https://schema.org/OutOfStock',
-                seller: {
-                  '@type': 'Organization',
-                  name: 'K&E Beauty',
-                },
-                url: `${process.env.NEXT_PUBLIC_APP_URL}/${locale}/product/${slug}`,
-              },
-            }
-          : {}),
-      };
-    }
+    product = await getCachedProduct(slug);
   } catch {
-    // JSON-LD is non-critical
+    // non-critical — client will refetch
+  }
+
+  const jsonLd: object[] = [];
+
+  if (product) {
+    const defaultVariant = product.variants[0] ?? null;
+    const primaryImage =
+      product.images.find((img) => img.is_primary) ?? product.images[0] ?? null;
+
+    jsonLd.push({
+      '@context': 'https://schema.org',
+      '@type': 'Product',
+      name: product.name,
+      ...(product.description
+        ? { description: product.description.replace(/<[^>]*>/g, '').slice(0, 300) }
+        : {}),
+      ...(primaryImage ? { image: [primaryImage.url] } : {}),
+      brand: {
+        '@type': 'Brand',
+        name: product.brand.name,
+      },
+      category: product.category.name,
+      ...(defaultVariant
+        ? {
+            offers: {
+              '@type': 'Offer',
+              priceCurrency: 'USD',
+              price: defaultVariant.price,
+              availability: defaultVariant.in_stock
+                ? 'https://schema.org/InStock'
+                : 'https://schema.org/OutOfStock',
+              seller: {
+                '@type': 'Organization',
+                name: 'K&E Beauty',
+              },
+              url: `${baseUrl}/${locale}/product/${slug}`,
+            },
+          }
+        : {}),
+    });
+
+    jsonLd.push({
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Home',
+          item: `${baseUrl}/${locale}`,
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: 'Catalog',
+          item: `${baseUrl}/${locale}/catalog`,
+        },
+        {
+          '@type': 'ListItem',
+          position: 3,
+          name: product.category.name,
+          item: `${baseUrl}/${locale}/catalog?category=${product.category.slug}`,
+        },
+        {
+          '@type': 'ListItem',
+          position: 4,
+          name: product.name,
+        },
+      ],
+    });
   }
 
   return (
     <>
-      {jsonLd && (
+      {jsonLd.map((ld, i) => (
         <script
+          key={i}
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(ld) }}
         />
-      )}
-      <ProductDetailPage slug={slug} />
+      ))}
+      <ProductDetailPage slug={slug} product={product} locale={locale} />
     </>
   );
 }

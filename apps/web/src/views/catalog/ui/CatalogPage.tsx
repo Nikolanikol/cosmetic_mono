@@ -7,7 +7,7 @@
 
 import { useState, useCallback, Suspense } from 'react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import { SlidersHorizontal, Grid3X3, LayoutList, ChevronDown } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
 import { formatPrice } from '@/shared/lib/formatPrice';
@@ -19,7 +19,7 @@ import { getProducts, getCategories } from '@packages/api/products';
 import { getBrands } from '@packages/api/brands';
 import { supabaseBrowser } from '@/shared/api/supabaseClient';
 import { queryKeys } from '@/shared/api/queryClient';
-import type { ProductFilters, ProductSortOption } from '@packages/types';
+import type { ProductFilters, ProductSortOption, PaginatedProducts, Category, Brand } from '@packages/types';
 
 // ============================================================================
 // Constants
@@ -38,10 +38,20 @@ const PRODUCTS_PER_PAGE = 24;
 // Main Component
 // ============================================================================
 
-export function CatalogPage() {
+interface CatalogPageProps {
+  initialProducts?: PaginatedProducts;
+  initialCategories?: Category[];
+  initialBrands?: Brand[];
+}
+
+export function CatalogPage({ initialProducts, initialCategories, initialBrands }: CatalogPageProps) {
   return (
     <Suspense fallback={<CatalogPageSkeleton />}>
-      <CatalogPageContent />
+      <CatalogPageContent
+        initialProducts={initialProducts}
+        initialCategories={initialCategories}
+        initialBrands={initialBrands}
+      />
     </Suspense>
   );
 }
@@ -50,7 +60,11 @@ export function CatalogPage() {
 // Content Component
 // ============================================================================
 
-function CatalogPageContent() {
+function CatalogPageContent({
+  initialProducts,
+  initialCategories,
+  initialBrands,
+}: CatalogPageProps) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams() ?? new URLSearchParams();
@@ -74,16 +88,20 @@ function CatalogPageContent() {
         page,
         limit: PRODUCTS_PER_PAGE,
       }),
+    initialData: initialProducts,
+    placeholderData: keepPreviousData,
   });
 
   const { data: categories } = useQuery({
     queryKey: queryKeys.categories.lists(),
     queryFn: () => getCategories(supabaseBrowser),
+    initialData: initialCategories,
   });
 
   const { data: brands } = useQuery({
     queryKey: queryKeys.brands.lists(),
     queryFn: () => getBrands(supabaseBrowser),
+    initialData: initialBrands,
   });
 
   // Update URL with filters

@@ -1,6 +1,9 @@
 import { OrderDetailPage } from '@/views/profile/ui/OrderDetailPage';
 
-export const metadata = { title: 'Заказ' };
+export const metadata = {
+  title: 'Заказ',
+  robots: { index: false, follow: false },
+};
 
 interface Props {
   params: Promise<{ id: string }>;

@@ -17,12 +17,15 @@ import type { ProductVariant, ProductWithDetails, ProductImage } from '@packages
 
 interface ProductDetailPageProps {
   slug: string;
+  product?: ProductWithDetails | null;
+  locale?: string;
 }
 
-export function ProductDetailPage({ slug }: ProductDetailPageProps) {
+export function ProductDetailPage({ slug, product: initialProduct, locale = 'en' }: ProductDetailPageProps) {
   const { data: product, isLoading, isError } = useQuery({
     queryKey: queryKeys.products.details(slug),
     queryFn: () => getProductBySlug(supabaseBrowser, slug),
+    initialData: initialProduct ?? undefined,
   });
 
   if (isLoading) return <ProductDetailSkeleton />;
@@ -31,7 +34,7 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
   return (
     <div className="min-h-screen bg-brand-black-900">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Breadcrumb product={product} />
+        <Breadcrumb product={product} locale={locale} />
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mt-6">
           <ProductGallery images={product.images} productName={product.name} />
           <ProductInfo product={product} />
@@ -45,15 +48,15 @@ export function ProductDetailPage({ slug }: ProductDetailPageProps) {
 
 // ── Breadcrumb ────────────────────────────────────────────────────────────────
 
-function Breadcrumb({ product }: { product: ProductWithDetails }) {
+function Breadcrumb({ product, locale }: { product: ProductWithDetails; locale: string }) {
   return (
     <nav className="flex items-center gap-1.5 text-sm text-brand-charcoal-400 flex-wrap">
-      <Link href="/" className="hover:text-white transition-colors">Главная</Link>
+      <Link href={`/${locale}`} className="hover:text-white transition-colors">Home</Link>
       <span className="text-brand-charcoal-600">/</span>
-      <Link href="/en/catalog" className="hover:text-white transition-colors">Каталог</Link>
+      <Link href={`/${locale}/catalog`} className="hover:text-white transition-colors">Catalog</Link>
       <span className="text-brand-charcoal-600">/</span>
       <Link
-        href={`/catalog?category=${product.category.slug}`}
+        href={`/${locale}/catalog?category=${product.category.slug}`}
         className="hover:text-white transition-colors"
       >
         {product.category.name}
@@ -427,11 +430,11 @@ function ProductNotFound() {
   return (
     <div className="min-h-screen bg-brand-black-900 flex items-center justify-center">
       <div className="text-center px-4">
-        <h1 className="text-2xl font-heading text-white mb-2">Товар не найден</h1>
+        <h1 className="text-2xl font-heading text-white mb-2">Product not found</h1>
         <p className="text-brand-charcoal-400 mb-6">
-          Возможно, он был удалён или ссылка неверная
+          This product may have been removed or the link is incorrect
         </p>
-        <Button href="/en/catalog">Перейти в каталог</Button>
+        <Button href="/en/catalog">Browse catalog</Button>
       </div>
     </div>
   );
