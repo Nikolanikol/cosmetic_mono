@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
 
   const res = await fetch(ENDPOINT, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json; charset=utf-8' },
     body: JSON.stringify({
       host: 'axis-beauty.com',
       key: KEY,
@@ -75,7 +75,7 @@ export async function GET(req: NextRequest) {
     const batch = urls.slice(i, i + batchSize);
     const res = await fetch(ENDPOINT, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json; charset=utf-8' },
       body: JSON.stringify({
         host: 'axis-beauty.com',
         key: KEY,
@@ -83,7 +83,8 @@ export async function GET(req: NextRequest) {
         urlList: batch,
       }),
     });
-    results.push({ status: res.status, count: batch.length });
+    const body = await res.text().catch(() => '');
+    results.push({ status: res.status, count: batch.length, body });
   }
 
   return NextResponse.json({
