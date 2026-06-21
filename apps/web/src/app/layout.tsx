@@ -4,6 +4,7 @@ import './globals.css';
 import { Providers } from './providers';
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID || 'G-14MJNKJ2LJ';
+const YM_ID = process.env.NEXT_PUBLIC_YM_ID || '110036309';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
@@ -22,6 +23,9 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
     googleBot: { index: true, follow: true },
+  },
+  verification: {
+    yandex: 'f911b93e30ecfedf',
   },
   openGraph: {
     type: 'website',
@@ -56,6 +60,9 @@ export default function RootLayout({
         <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} strategy="afterInteractive" />
         <Script id="gtag-init" strategy="afterInteractive">
           {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${GA_ID}')`}
+        </Script>
+        <Script id="yandex-metrika" strategy="afterInteractive">
+          {`(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return;}}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,'script','https://mc.yandex.ru/metrika/tag.js?id=${YM_ID}','ym');ym(${YM_ID},'init',{ssr:true,webvisor:true,clickmap:true,ecommerce:"dataLayer",accurateTrackBounce:true,trackLinks:true})`}
         </Script>
       </head>
       <body className="bg-brand-black-900 text-white min-h-screen flex flex-col">
