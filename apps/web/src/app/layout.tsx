@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
+import Script from 'next/script';
 import './globals.css';
 import { Providers } from './providers';
+
+const GA_ID = process.env.NEXT_PUBLIC_GA_ID || 'G-14MJNKJ2LJ';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
 
@@ -49,6 +52,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} strategy="afterInteractive" />
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','${GA_ID}')`}
+        </Script>
+      </head>
       <body className="bg-brand-black-900 text-white min-h-screen flex flex-col">
         <Providers>{children}</Providers>
       </body>
