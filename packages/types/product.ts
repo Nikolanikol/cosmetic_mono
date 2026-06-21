@@ -79,3 +79,12 @@ export interface PaginatedProducts {
   page: number;
   total_pages: number;
 }
+
+export const KBEAUTY_ROUTINE_STEPS: Record<string, { name: string }> = {
+  cleansing: { name: 'Cleansing' },
+  toner: { name: 'Toner' },
+  essence: { name: 'Essence' },
+  serum: { name: 'Serum' },
+  moisturizer: { name: 'Moisturizer' },
+  sunscreen: { name: 'Sunscreen' },
+};

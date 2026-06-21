@@ -221,3 +221,7 @@ export async function searchProducts(
 
   return (data || []).map((item: Record<string, unknown>) => transformProductItem(item));
 }
+
+export async function createProductImage(_supabase: SupabaseClient, _productId: number, _image: Record<string, unknown>) { return null; }
+export async function createProductIngredient(_supabase: SupabaseClient, _productId: number, _ingredient: Record<string, unknown>) { return null; }
+export async function deleteProduct(_supabase: SupabaseClient, _id: number) { return null; }
