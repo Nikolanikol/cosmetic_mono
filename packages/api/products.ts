@@ -14,19 +14,19 @@ import type {
 
 const PRODUCT_LIST_SELECT = `
   *,
-  brand:brands!inner(*),
-  category:categories!inner(*),
-  variants:product_variants(*),
-  images:product_images(*)
+  brand:cos_brands!inner(*),
+  category:cos_categories!inner(*),
+  variants:cos_product_variants(*),
+  images:cos_product_images(*)
 `;
 
 const PRODUCT_DETAIL_SELECT = `
   *,
-  brand:brands!inner(*),
-  category:categories!inner(*),
-  variants:product_variants(*),
-  images:product_images(*),
-  tags:product_tags(tag)
+  brand:cos_brands!inner(*),
+  category:cos_categories!inner(*),
+  variants:cos_product_variants(*),
+  images:cos_product_images(*),
+  tags:cos_product_tags(tag)
 `;
 
 function transformProductItem(item: Record<string, unknown>): ProductWithDefaultVariant {
@@ -61,7 +61,7 @@ export async function getProducts(
   const { filters = {}, sort = 'popular', page = 1, limit = 24 } = params;
 
   let query = supabase
-    .from('products')
+    .from('cos_products')
     .select(PRODUCT_LIST_SELECT, { count: 'exact' })
     .eq('is_active', true);
 
@@ -132,7 +132,7 @@ export async function getProductBySlug(
   slug: string
 ): Promise<ProductWithDetails | null> {
   const { data, error } = await supabase
-    .from('products')
+    .from('cos_products')
     .select(PRODUCT_DETAIL_SELECT)
     .eq('slug', slug)
     .eq('is_active', true)
@@ -158,7 +158,7 @@ export async function getRelatedProducts(
   limit: number = 4
 ): Promise<ProductWithDefaultVariant[]> {
   const { data, error } = await supabase
-    .from('products')
+    .from('cos_products')
     .select(PRODUCT_LIST_SELECT)
     .eq('is_active', true)
     .eq('category_id', categoryId)
@@ -174,7 +174,7 @@ export async function getRelatedProducts(
 
 export async function getCategories(supabase: SupabaseClient): Promise<Category[]> {
   const { data, error } = await supabase
-    .from('categories')
+    .from('cos_categories')
     .select('*')
     .order('sort_order', { ascending: true });
 
@@ -190,7 +190,7 @@ export async function getFeaturedProducts(
   limit: number = 8
 ): Promise<ProductWithDefaultVariant[]> {
   const { data, error } = await supabase
-    .from('products')
+    .from('cos_products')
     .select(PRODUCT_LIST_SELECT)
     .eq('is_active', true)
     .order('created_at', { ascending: false })
@@ -209,7 +209,7 @@ export async function searchProducts(
   limit: number = 10
 ): Promise<ProductWithDefaultVariant[]> {
   const { data, error } = await supabase
-    .from('products')
+    .from('cos_products')
     .select(PRODUCT_LIST_SELECT)
     .eq('is_active', true)
     .or(`name.ilike.%${query}%,description.ilike.%${query}%`)

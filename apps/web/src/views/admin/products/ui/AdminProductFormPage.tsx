@@ -399,7 +399,7 @@ export function AdminProductFormPage({ mode, productId }: Props) {
 
         // 3. Handle images (delete removed, create new)
         for (const id of removedImageIds) {
-          await supabaseBrowser.from('product_images').delete().eq('id', id);
+          await supabaseBrowser.from('cos_product_images').delete().eq('id', id);
         }
         for (const [i, img] of images.filter((img) => img.url && !img.id).entries()) {
           await createProductImage(supabaseBrowser, {
@@ -413,7 +413,7 @@ export function AdminProductFormPage({ mode, productId }: Props) {
 
         // 4. Handle ingredients
         for (const id of removedIngredientIds) {
-          await supabaseBrowser.from('product_ingredients').delete().eq('id', id);
+          await supabaseBrowser.from('cos_product_ingredients').delete().eq('id', id);
         }
         for (const ing of ingredients.filter((i) => i.inci_name)) {
           if (!ing.id) {
@@ -427,7 +427,7 @@ export function AdminProductFormPage({ mode, productId }: Props) {
             });
           } else {
             await supabaseBrowser
-              .from('product_ingredients')
+              .from('cos_product_ingredients')
               .update({
                 inci_name:      ing.inci_name,
                 name_ru:        ing.name_ru,

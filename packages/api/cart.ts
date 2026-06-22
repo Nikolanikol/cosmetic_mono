@@ -25,14 +25,14 @@ export async function getUserCart(
     .select(
       `
       *,
-      variant:product_variants!inner(
+      variant:cos_product_variants!inner(
         *,
-        product:products!inner(
+        product:cos_products!inner(
           id,
           name,
           slug,
-          brand:brands(name, slug),
-          images:product_images(url, is_primary)
+          brand:cos_brands(name, slug),
+          images:cos_product_images(url, is_primary)
         )
       )
     `
@@ -58,14 +58,14 @@ export async function getGuestCart(
     .select(
       `
       *,
-      variant:product_variants!inner(
+      variant:cos_product_variants!inner(
         *,
-        product:products!inner(
+        product:cos_products!inner(
           id,
           name,
           slug,
-          brand:brands(name, slug),
-          images:product_images(url, is_primary)
+          brand:cos_brands(name, slug),
+          images:cos_product_images(url, is_primary)
         )
       )
     `

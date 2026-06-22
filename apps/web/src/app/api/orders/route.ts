@@ -71,13 +71,13 @@ export async function POST(request: Request) {
   const variantIds = cartItems.map((i) => i.variantId);
 
   const { data: rawVariants, error: variantsError } = await supabase
-    .from('product_variants')
+    .from('cos_product_variants')
     .select(
       `id, sku, name, price_rub, sale_price_rub, attributes,
-       product:products!inner(
+       product:cos_products!inner(
          id, name, slug,
-         brand:brands!inner(name),
-         images:product_images(url, is_primary)
+         brand:cos_brands!inner(name),
+         images:cos_product_images(url, is_primary)
        )`
     )
     .in('id', variantIds);

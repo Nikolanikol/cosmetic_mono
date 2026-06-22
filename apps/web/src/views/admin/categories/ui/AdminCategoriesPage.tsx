@@ -216,7 +216,7 @@ export function AdminCategoriesPage() {
   const updateMutation = useMutation({
     mutationFn: async ({ id, form }: { id: string; form: CatForm }) => {
       const { error } = await supabaseBrowser
-        .from('categories')
+        .from('cos_categories')
         .update({
           name: form.name,
           slug: form.slug,
@@ -233,7 +233,7 @@ export function AdminCategoriesPage() {
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabaseBrowser.from('categories').delete().eq('id', id);
+      const { error } = await supabaseBrowser.from('cos_categories').delete().eq('id', id);
       if (error) throw new Error(error.message);
     },
     onSuccess: () => { invalidate(); setConfirmDelete(null); },

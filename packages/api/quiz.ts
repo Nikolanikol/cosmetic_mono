@@ -79,7 +79,7 @@ export async function getRecommendedProducts(
 ): Promise<ProductWithDefaultVariant[]> {
   // Get products that match the skin type or are suitable for all skin types
   const { data, error } = await supabase
-    .from('products')
+    .from('cos_products')
     .select(
       `
       id,
@@ -91,10 +91,10 @@ export async function getRecommendedProducts(
       skin_types,
       tags,
       created_at,
-      brand:brands!inner(id, name, slug, origin_country),
-      category:categories!inner(id, name, slug),
-      variants:product_variants(id, sku, name, price_rub, sale_price_rub, stock, attributes),
-      images:product_images(id, url, alt, is_primary, sort_order)
+      brand:cos_brands!inner(id, name, slug, origin_country),
+      category:cos_categories!inner(id, name, slug),
+      variants:cos_product_variants(id, sku, name, price_rub, sale_price_rub, stock, attributes),
+      images:cos_product_images(id, url, alt, is_primary, sort_order)
     `
     )
     .eq('is_active', true)

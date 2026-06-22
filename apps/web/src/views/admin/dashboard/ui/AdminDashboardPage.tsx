@@ -52,7 +52,7 @@ export function AdminDashboardPage() {
     queryKey: ['admin', 'activeProducts'],
     queryFn:  async () => {
       const { count } = await supabaseBrowser
-        .from('products')
+        .from('cos_products')
         .select('*', { count: 'exact', head: true })
         .eq('is_active', true);
       return count ?? 0;

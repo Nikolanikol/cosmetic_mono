@@ -47,12 +47,12 @@ export function AdminProductsPage() {
       const to   = from + limit - 1;
 
       let q = supabaseBrowser
-        .from('products')
+        .from('cos_products')
         .select(
           `id, name, slug, is_active, is_featured, created_at,
-           brand:brands!inner(name),
-           category:categories!inner(name),
-           variants:product_variants(price_rub, stock)`,
+           brand:cos_brands!inner(name),
+           category:cos_categories!inner(name),
+           variants:cos_product_variants(price_rub, stock)`,
           { count: 'exact' }
         );
 

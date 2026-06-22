@@ -15,7 +15,7 @@ import type {
 import type { SkinType } from '../types/user';
 
 const WISHLIST_PRODUCT_SELECT = `
-  product:products!inner(
+  product:cos_products!inner(
     id,
     name,
     slug,
@@ -30,10 +30,10 @@ const WISHLIST_PRODUCT_SELECT = `
     meta_title,
     meta_description,
     created_at,
-    brand:brands!inner(id, name, slug, origin_country),
-    category:categories!inner(id, name, slug, parent_id, image_url, sort_order, created_at),
-    variants:product_variants(id, sku, name, price_rub, sale_price_rub, stock, attributes),
-    images:product_images(id, url, alt, is_primary, sort_order)
+    brand:cos_brands!inner(id, name, slug, origin_country),
+    category:cos_categories!inner(id, name, slug, parent_id, image_url, sort_order, created_at),
+    variants:cos_product_variants(id, sku, name, price_rub, sale_price_rub, stock, attributes),
+    images:cos_product_images(id, url, alt, is_primary, sort_order)
   )
 `;
 
